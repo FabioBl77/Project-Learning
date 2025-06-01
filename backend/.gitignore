@@ -33,4 +33,8 @@ build/
 .vscode/
 
 # Ignora classe con dati sensibili
+<<<<<<< HEAD
 # **/DatabaseConfig.java
+=======
+
+>>>>>>> ef33af2471ccdf9a0d5c77aa5c93c8a7edc4bb72
