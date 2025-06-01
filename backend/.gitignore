@@ -33,4 +33,4 @@ build/
 .vscode/
 
 # Ignora classe con dati sensibili
-**/DatabaseConfig.java
+
