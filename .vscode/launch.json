@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TechbookApplication<techbook>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.libreria.techbook.TechbookApplication",
+            "projectName": "techbook",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

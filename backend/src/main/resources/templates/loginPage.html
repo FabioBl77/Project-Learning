@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login e Registrazione</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            max-width: 400px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="password"], input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Login</h2>
+    <form th:action="@{/login}" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <input type="submit" value="Login">
+    </form>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <p>---- oppure ----</p>
+    <h2>Registrati</h2>
+    <form th:action="@{/register}" method="post">
+        <label for="newUsername">Username:</label>
+        <input type="text" id="newUsername" name="username" required>
+
+        <label for="newEmail">Email:</label>
+        <input type="email" id="newEmail" name="email" required>
+
+        <label for="newPassword">Password:</label>
+        <input type="password" id="newPassword" name="password" required>
+
+        <input type="submit" value="Crea Account">
+    </form>
+
+</body>
+</html>
