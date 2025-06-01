@@ -33,6 +33,11 @@ build/
 .vscode/
 
 # Ignora classe con dati sensibili
+<<<<<<< HEAD
 # **/DatabaseConfig.java
 /src/main/resources/application.properties
+=======
+/src/main/resources/application.properties
+
+>>>>>>> 446c333730c2e5eda4e45dde86c5cfe51af8ecb5
 
