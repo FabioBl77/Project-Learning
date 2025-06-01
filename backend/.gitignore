@@ -33,4 +33,6 @@ build/
 .vscode/
 
 # Ignora classe con dati sensibili
+/src/main/resources/application.properties
+
 
