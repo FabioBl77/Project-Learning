@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 
+import com.libreria.techbook.model.LibreriaUser;
 import com.libreria.techbook.model.Prodotto;
 import com.libreria.techbook.model.User;
 
@@ -55,6 +57,34 @@ public class ProdottoJDBCTemp {
                         listaProd.add(prodotto);
                     }
                     return listaProd;
+                }
+            });
+        } catch (Exception e) {
+            // Gestione dell'errore
+            return new ArrayList<>();
+        }
+    }
+
+    public ArrayList<LibreriaUser> ritornaLibreria(String nomeLibreria) {
+        try {
+            String query = "SELECT * FROM " + nomeLibreria;
+            return jdbcTemplateObject.query(query, new ResultSetExtractor<ArrayList<LibreriaUser>>() {
+                @Override
+                public ArrayList<LibreriaUser> extractData(ResultSet rs) throws SQLException {
+                    ArrayList<LibreriaUser> listaLibrerie = new ArrayList<>();
+                    while (rs.next()) {
+                        LibreriaUser libreria = new LibreriaUser();
+                        libreria.setIdLibreria(rs.getInt("idLibreria"));
+                        libreria.setIdLibro(rs.getInt("idLibro"));
+                        libreria.setTitoloLibro(rs.getString("TitoloLibro"));
+                        libreria.setGenereLibro(rs.getString("genereLibro"));
+                        libreria.setAutoreLibro(rs.getString("autoreLibro"));
+                        libreria.setCopertinaLibro(rs.getString("copertinaLibro"));
+                        
+                      
+                        listaLibrerie.add(libreria);
+                    }
+                    return listaLibrerie;
                 }
             });
         } catch (Exception e) {
@@ -144,6 +174,50 @@ public class ProdottoJDBCTemp {
         }
         
        
+    }
+
+    public void aggiungiLibroAllaLibreria(String nomeLibreria, int idLibro) {
+        // Verifica se il libro è già presente nella libreria
+    String checkQuery = "SELECT COUNT(*) FROM " + nomeLibreria + " WHERE idLibro = ?";
+    Integer count = jdbcTemplateObject.queryForObject(checkQuery, Integer.class, idLibro);
+
+    if (count != null && count > 0) {
+        System.out.println("Il libro è già presente nella libreria.");
+        return; // oppure lancia un'eccezione custom se preferisci
+    }
+        String query = "SELECT * FROM libri WHERE id = ?";
+        Prodotto libro = jdbcTemplateObject.queryForObject(query, new BeanPropertyRowMapper<>(Prodotto.class), idLibro);
+        String titoloLibro = libro.getTitolo();
+        String genereLibro = libro.getGenere();
+        String autoreLibro = libro.getAutore();
+        String copertinaLibro = libro.getCopertina();
+        String queryInsert = "INSERT INTO " + nomeLibreria + " (idLibro, TitoloLibro, genereLibro, autoreLibro, copertinaLibro) VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplateObject.update(queryInsert, idLibro, titoloLibro, genereLibro, autoreLibro, copertinaLibro);
+        
+    }
+
+    public void rimuoviLibroDaLibreria(String nomeLibreria, int idLibro) throws SQLException {
+        String sql = "DELETE FROM " + nomeLibreria + " WHERE idLibro = ?";
+        jdbcTemplateObject.update(sql, idLibro);
+    }
+
+    /**
+     * Elimina l'utente con l'ID specificato e la sua relativa libreria.
+     * 
+     * @param userId l'ID dell'utente da eliminare
+     * @param nomeLibreria il nome della tabella della libreria dell'utente da eliminare
+     * @throws SQLException se si verifica un errore durante l'esecuzione della query
+     * @author Alessandro Bugatti
+     */
+     public void eliminaUser(String nomeLibreria) throws SQLException {
+        
+        // Elimina l'utente con l'ID specificato
+        String sql = "DELETE FROM users WHERE nomelibreria = ?";
+        jdbcTemplateObject.update(sql, nomeLibreria);
+        // Elimina la tabella con il nome specificato
+        String dropTableSql = "DROP TABLE " + nomeLibreria;
+
+        jdbcTemplateObject.execute(dropTableSql);
     }
     
     

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Conferma Eliminazione Utente</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Conferma Eliminazione</h2>
+        <p>Sei sicuro di voler eliminare questo utente?</p>
+        <p><strong>Questa azione eliminerà l'utente e tutti i dati collegati, inclusa la sua libreria.</strong></p>
+
+        <form th:action="@{/eliminazioneConfermata}" method="post">
+            
+            <button type="submit">Sì, elimina</button>
+            <a th:href="@{/profilo}"><button type="button">No, annulla</button></a>
+        </form>
+    </div>
+</body>
+</html>

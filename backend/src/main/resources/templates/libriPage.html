@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Libri disponibili</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <h1>Libri disponibili</h1>
+
+    <!-- Pulsante Logout -->
+    <form th:action="@{/logout}" method="get" style="margin-bottom: 20px;">
+        <button type="submit">Logout</button>
+    </form>
+
+    <!-- Tabella dei libri -->
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>Titolo</th>
+                <th>Autore</th>
+                <th>Genere</th>
+                <th>Copertina</th>
+                <th>Aggiungi alla tua libreria</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="libro : ${listaLibri}">
+                <td th:text="${libro.titolo}">Titolo</td>
+                <td th:text="${libro.genere}">Titolo</td>
+                <td th:text="${libro.autore}">Autore</td>
+                <td><img class="imgCopertina" th:src="${libro.copertina}"></td>
+                <td>
+                    <form th:action="@{/aggiungiLibro}" method="post">
+                        <input type="hidden" name="idLibro" th:value="${libro.id}">
+                        <button type="submit">➕ Aggiungi</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

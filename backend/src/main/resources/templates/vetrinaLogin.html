@@ -2,59 +2,86 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Vetrina Logout</title>
+    <title>Vetrina Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            background: #f3f3f3;
+            margin: 0;
+            padding: 0;
+            text-align: center;
         }
-        .button-container {
-            margin-bottom: 20px;
-        }
-        .button-container a {
-            margin-right: 10px;
-            padding: 10px 15px;
-            background-color: #007BFF;
+
+        .header {
+            background-color: #4CAF50;
+            padding: 20px;
             color: white;
-            text-decoration: none;
+            font-size: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
             border-radius: 5px;
         }
-        .button-container a:hover {
-            background-color: #0056b3;
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 30px;
+            max-width: 600px;
+            margin: 50px auto;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 40px;
+
+        .big-button {
+            background-color: #2196F3;
+            color: white;
+            font-size: 24px;
+            padding: 40px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .user {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9ecef;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+
+        .big-button:hover {
+            background-color: #1976D2;
         }
     </style>
 </head>
 <body>
-    <div class="button-container">
-        <a th:href="@{/logout}">Logout</a>
-       
+
+    <div class="header">
+    <div>Benvenuto, <span th:text="${userLoggato.username}">Utente</span>!</div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>  
+
+    <div class="container">
+        <form th:action="@{/profilo}" method="get">
+            <button class="big-button">Profilo</button>
+        </form>
+
+        <form th:action="@{/libri}" method="get">
+            <button class="big-button">Libri</button>
+        </form>
+
+        <form th:action="@{/challenge}" method="get">
+            <button class="big-button">Challenge</button>
+        </form>
+
+        <form th:action="@{/utenti}" method="get">
+            <button class="big-button">Utenti</button>
+        </form>
     </div>
 
-    <h1>Home page dell'utente LOGGATO</h1>
-
-   <!--<div class="user-info" th:if="${userLoggato != null}">
-        <strong>User:</strong>
-        <span th:text="'ID: ' + ${userLoggato.id} + ', Username: ' + ${userLoggato.username} + ', Email: ' + ${userLoggato.email} + ', Password: ' + ${userLoggato.password} + ', Punteggio: ' + ${userLoggato.punteggio}"></span>
-    </div>-->
 </body>
 </html>
-
