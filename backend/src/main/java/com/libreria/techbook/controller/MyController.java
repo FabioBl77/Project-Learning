@@ -31,7 +31,17 @@ public class MyController {
     
     
 
-    /* la rotta Homepage che ti dirotta in una pagina web o l'altra in base al login */
+    /* la rotta Homepage che ti dirotta in una pagina web o l'altra in base al login */   
+    /**
+     * Mostra la pagina di home page in base allo stato del login dell'utente.
+     * Se l'utente non e' loggato, mostra la pagina "vetrinaLogout" con la lista degli utenti 
+     * e la lista dei prodotti.
+     * Se l'utente e' loggato come admin, mostra la pagina "vetrinaAdmin" con le informazioni dell'utente.
+     * Se l'utente e' loggato come utente normale, mostra la pagina "vetrinaLogin" con le informazioni dell'utente.
+     * @param model il modello passato alla vista
+     * @param session la sessione dell'utente corrente
+     * @return la stringa della pagina da visualizzare
+     */
     @GetMapping("/")
     public String mostraListaUsers(Model model, HttpSession session) {
         
@@ -60,6 +70,12 @@ public class MyController {
     }
 
     /* rotta che posta alla pagina di login senza effettuare nessuna operazione */
+    /**
+     * Mostra la pagina di login.
+     * La pagina di login richiede all'utente di inserire le credenziali per effettuare il login.
+     * La pagina e vuota e non effettua alcuna operazione.
+     * @return la pagina di login
+     */
     @GetMapping("/loginPage")
     public String loginPage() {
         return "loginPage";
@@ -67,6 +83,18 @@ public class MyController {
 
     /* Questa rotta serve per effettuare il login riceve i dati dalla pagina loginPage e li confronta per vedere se sono corretti
      * e se si logga un normale utente oppure un amministratore
+     */
+    /**
+     * Esegue il login dell'utente.
+     * La funzione controlla se l'utente esiste e se le credenziali sono corrette.
+     * Se l'utente e l'amministratore, redirige alla pagina "vetrinaAdmin".
+     * Se l'utente e un utente normale, redirige alla pagina "vetrinaLogin".
+     * Se le credenziali sono errate, redirige alla pagina "loginPage" con un messaggio di errore.
+     * @param username lo username dell'utente
+     * @param password la password dell'utente
+     * @param model il modello passato alla vista
+     * @param session la sessione dell'utente
+     * @return la stringa della pagina da visualizzare
      */
     @PostMapping("/login")
     public String handleLogin(@RequestParam String username,
@@ -155,6 +183,16 @@ public class MyController {
         return "confermaEliminazioneUserPage";
     }
 
+    
+
+    /**
+     * La funzione si occupa di eliminare l'utente corrente e la sua libreria
+     * e di invalidare la sessione.
+     * 
+     * @param model il modello passato alla vista
+     * @param session la sessione dell'utente corrente
+     * @return la stringa "redirect:/" che indica di reindirizzare alla home page
+     */
     @PostMapping("eliminazioneConfermata")
     public String getEliminazioneConfermata(Model model, HttpSession session) {
         User userLoggato = (User) session.getAttribute("userLoggato");
@@ -171,6 +209,14 @@ public class MyController {
     
     
 
+    /**
+     * Mostra la pagina con la lista dei libri presenti nel database.
+     * La lista e' composta da oggetti Prodotto, ciascuno dei quali rappresenta un libro
+     * con i propri attributi: id, titolo, genere, autore e copertina.
+     * 
+     * @param model il modello passato alla vista
+     * @return la stringa "libriPage" che indica la pagina da visualizzare
+     */
     @GetMapping("/libri")
     public String getListaLibri(Model model) {
         ArrayList<Prodotto> listaLibri = prodottoJDBCTemp.ritornaProdotto();
@@ -178,6 +224,18 @@ public class MyController {
         return "libriPage";
     }
     
+   
+    /**
+     * La funzione si occupa di aggiungere un libro alla libreria dell'utente corrente.
+     * La funzione riceve come parametro l'id del libro da aggiungere e l'oggetto session
+     * contenente l'utente corrente.
+     * La funzione controlla se l'utente e' loggato, se si chiama la funzione
+     * aggiungiLibroAllaLibreria per aggiungere il libro alla sua libreria.
+     * Infine restituisce la stringa "/libriPage" che indica la pagina da visualizzare.
+     * @param idLibro l'id del libro da aggiungere
+     * @param session l'oggetto session contenente l'utente corrente
+     * @return la stringa "/libriPage" che indica la pagina da visualizzare
+     */
     @PostMapping("/aggiungiLibro")
     public String aggiungiLibro(@RequestParam("idLibro") int idLibro, HttpSession session) {
         User user = (User) session.getAttribute("userLoggato");
@@ -186,7 +244,19 @@ public class MyController {
     }
     return "/libriPage"; // oppure altra vista
     }
-
+    
+    
+/**
+ * Rimuove un libro dalla libreria dell'utente corrente.
+ * La funzione riceve come parametro l'id del libro da rimuovere e verifica se l'utente è loggato.
+ * Se l'utente è loggato, chiama la funzione rimuoviLibroDaLibreria per rimuovere il libro dalla sua libreria.
+ * Restituisce la stringa "/profiloPage" che indica la pagina da visualizzare con la lista aggiornata delle librerie.
+ * In caso contrario, restituisce la stringa "/" che indica la pagina da visualizzare in caso di errore.
+ * @param idLibro l'id del libro da rimuovere
+ * @param model il modello passato alla vista
+ * @param session l'oggetto session contenente l'utente corrente
+ * @return la stringa "/profiloPage" o "/" che indica la pagina da visualizzare
+ */
     @PostMapping("/rimuoviLibro")
     public String rimuoviLibro(@RequestParam("idLibro") int idLibro,Model model, HttpSession session) {
         User user = (User) session.getAttribute("userLoggato");
@@ -210,6 +280,13 @@ public class MyController {
 
 
     /* questa rotta serve per effettuare il logout dalla sessione */
+    /**
+     * Questa funzione effettua il logout dell'utente dalla sessione e
+     * reindirizza alla home page.
+     * 
+     * @param session la sessione dell'utente corrente
+     * @return la stringa "redirect:/" che indica di reindirizzare alla home page
+     */
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // cancella tutto dalla sessione

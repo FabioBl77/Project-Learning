@@ -64,7 +64,19 @@ public class ProdottoJDBCTemp {
             return new ArrayList<>();
         }
     }
-
+    
+    
+    /**
+     * Ritorna una lista di oggetti LibreriaUser contenenti i dati presenti
+     * nella tabella "nomeLibreria" del database.
+     * La lista contiene oggetti di tipo LibreriaUser, ciascuno dei quali
+     * rappresenta un libro con i propri attributi: idLibreria, idLibro,
+     * titoloLibro, genereLibro, autoreLibro e copertinaLibro.
+     * Se si verifica un errore durante l'esecuzione della query, viene
+     * ritornata una lista vuota.
+     * @param nomeLibreria nome della libreria
+     * @return lista di oggetti LibreriaUser
+     */
     public ArrayList<LibreriaUser> ritornaLibreria(String nomeLibreria) {
         try {
             String query = "SELECT * FROM " + nomeLibreria;
@@ -175,7 +187,15 @@ public class ProdottoJDBCTemp {
         
        
     }
-
+    
+    
+    /**
+     * Aggiunge un libro alla libreria dell'utente specificato.
+     * La funzione verifica se il libro è già presente nella libreria e, se non lo è,
+     * lo aggiunge alla tabella "nomeLibreria".
+     * @param nomeLibreria il nome della tabella che rappresenta la libreria dell'utente
+     * @param idLibro l'ID del libro da aggiungere
+     */
     public void aggiungiLibroAllaLibreria(String nomeLibreria, int idLibro) {
         // Verifica se il libro è già presente nella libreria
     String checkQuery = "SELECT COUNT(*) FROM " + nomeLibreria + " WHERE idLibro = ?";
@@ -195,6 +215,17 @@ public class ProdottoJDBCTemp {
         jdbcTemplateObject.update(queryInsert, idLibro, titoloLibro, genereLibro, autoreLibro, copertinaLibro);
         
     }
+
+    
+    /**
+     * Rimuove un libro dalla libreria specificata.
+     * La funzione esegue una query per eliminare il libro identificato da idLibro
+     * dalla tabella corrispondente al nome della libreria fornito.
+     * 
+     * @param nomeLibreria il nome della tabella che rappresenta la libreria da cui rimuovere il libro
+     * @param idLibro l'ID del libro da rimuovere
+     * @throws SQLException se si verifica un errore durante l'esecuzione della query
+     */
 
     public void rimuoviLibroDaLibreria(String nomeLibreria, int idLibro) throws SQLException {
         String sql = "DELETE FROM " + nomeLibreria + " WHERE idLibro = ?";
@@ -221,12 +252,12 @@ public class ProdottoJDBCTemp {
     }
     
     
-/**
- * Crea una nuova tabella chiamata 'users' nel database se non esiste già.
- * La tabella include le colonne: userid, username, email, password e punteggio.
- * Se la tabella esiste già, non viene eseguita alcuna azione.
- * In caso di errore durante l'esecuzione della query, l'eccezione verrà stampata.
- */
+    /**
+     * Crea una nuova tabella chiamata 'users' nel database se non esiste già.
+     * La tabella include le colonne: userid, username, email, password e punteggio.
+     * Se la tabella esiste già, non viene eseguita alcuna azione.
+     * In caso di errore durante l'esecuzione della query, l'eccezione verrà stampata.
+     */
 
     public void creaNuovaTabUsers() {
         // Query SQL per verificare se la tabella esiste
@@ -292,20 +323,42 @@ public class ProdottoJDBCTemp {
         }
     }
 
-    /* Metodo per creare il nome della libreria derivante dall'username */
+    /* Metodo per creare il nome della libreria derivante dall'username */  
+    /**
+     * Crea il nome della libreria derivante dall'username.
+     * Il nome della libreria viene creato sostituendo tutti i caratteri non alfanumerici
+     * dell'username con la stringa vuota e convertendo il risultato in minuscolo.
+     * @param username username dell'utente
+     * @return nome della libreria
+     */
     public String creaLibreriaName(String username) {
         String pulita = username.replaceAll("[^a-zA-Z0-9]", "");
         String nameLibreria = pulita.toLowerCase();
         return "libreria_" + nameLibreria;    
     }
+
     /* Metodo per creare un user */
+    /**
+     * Crea un nuovo utente nel database.
+     * @param user oggetto User che rappresenta l'utente da creare
+     * @param username username dell'utente
+     * @param email email dell'utente
+     * @param password password dell'utente
+     * @param punteggio punteggio dell'utente
+     */   
     public void createUser(User user, String username, String email, String password, int punteggio) {
         
         String query = "INSERT INTO users (username, email, password, nomelibreria, punteggio) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplateObject.update(query, user.getUsername(), user.getEmail(), user.getPassword(), user.getNomeLibreria(), user.getPunteggio());
     }
     
-    // Metodo per eseguire query DDL
+    // Metodo per eseguire query DDL  
+    /**
+     * Esegue una query DDL (Data Definition Language) sul database.
+     * La query e' eseguita tramite l'oggetto JdbcTemplate.
+     * Se si verifica un errore durante l'esecuzione della query, viene richiamata la gestione dell'errore.
+     * @param query la query DDL da eseguire
+     */
     public void executeDDLQuery(String query) {
         try {
             jdbcTemplateObject.execute(query);
