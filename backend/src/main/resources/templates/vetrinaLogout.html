@@ -76,6 +76,7 @@
             <tr>
                 <th>ID challange</th>
                 <th>Data</th>
+                <th>Data Fine</th>
                 <th>Nome challange</th>
                 <th>Condizione</th>
                 <th>vincitore</th>
@@ -88,6 +89,7 @@
             <tr th:each="challange : ${listaStorico}">
                 <td th:text="${challange.idChallange}">ID</td>
                 <td th:text="${challange.data}">Data</td>
+                <td th:text="${challange.dataFine}">Data Fine</td>
                 <td th:text="${challange.nomeChallange}">nome</td>
                 <td th:text="${challange.condizione}">Condizione</td>
                 <td th:text="${challange.nomeVincitore}">Vincitore</td>

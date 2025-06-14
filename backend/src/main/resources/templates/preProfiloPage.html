@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Utente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #007BFF;
+            color: white;
+            padding: 15px 30px;
+        }
+
+        .logout-btn {
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 80px); /* Full height minus header */
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .main-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .main-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>Benvenuto, <span th:text="${userLoggato.username}">Utente</span>!</div>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="logout-btn">Logout</button>
+    </form>
+</div>
+
+<div class="main-content">
+    <div class="button-group">
+        <form th:action="@{/profilo}" method="get">
+            <button class="main-btn" type="submit">Dati Utente</button>
+        </form>
+        <form th:action="@{/challenge}" method="get">
+            <button class="main-btn" type="submit">Challenge</button>
+        </form>
+        <form th:action="@{/libreria}" method="get">
+            <button class="main-btn" type="submit">Libreria</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

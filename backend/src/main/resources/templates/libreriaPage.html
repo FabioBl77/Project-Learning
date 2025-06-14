@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profilo Utente</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="header">
+    <h2>Benvenuto, <span th:text="${userLoggato.username}">Utente</span></h2>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="logout-btn">Logout</button>
+    </form>
+</div>
+
+<h3>Libri nella tua Libreria</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Titolo</th>
+            <th>Genere</th>
+            <th>Autore</th>
+            <th>Copertina</th>
+            <th>Rimuovi</th>
+            <th>Leggi</th> <!-- Nuova colonna per il bottone "Leggi Libro" -->
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="libro : ${listaLibrerie}">
+            <td th:text="${libro.titoloLibro}">Titolo</td>
+            <td th:text="${libro.genereLibro}">Genere</td>
+            <td th:text="${libro.autoreLibro}">Autore</td>
+            <td>
+                <img th:src="${libro.copertinaLibro}" alt="Copertina" width="60"/>
+            </td>
+            <td>
+                <form th:action="@{/rimuoviLibro}" method="post">
+                    <input type="hidden" name="idLibro" th:value="${libro.idLibro}">
+                    <button type="submit" style="background-color: #e74c3c; color: white; border: none; padding: 6px 12px; cursor: pointer;">Rimuovi Libro</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/leggiLibro}" method="get">
+                    <input type="hidden" name="idLibro" th:value="${libro.idLibro}">
+                    <button type="submit" style="background-color: #ffc107; color: black; border: none; padding: 6px 12px; cursor: pointer;">Leggi Libro</button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -3,56 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>Vetrina Login</title>
-    <style>
+      <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f3f3f3;
-            margin: 0;
-            padding: 0;
-            text-align: center;
+            margin: 20px;
         }
 
-        .header {
-            background-color: #4CAF50;
-            padding: 20px;
-            color: white;
-            font-size: 24px;
+        /* Contenitore per mettere i form (pulsanti) in linea */
+        .container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 15px; /* spazio tra i pulsanti */
+            margin-bottom: 30px;
         }
 
-        .logout-btn {
-            background-color: #f44336;
-            border: none;
-            color: white;
-            padding: 10px 20px;
+        /* Stile per i pulsanti grandi */
+        .big-button {
+            padding: 15px 30px;
             font-size: 16px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
             cursor: pointer;
             border-radius: 5px;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap: 30px;
-            max-width: 600px;
-            margin: 50px auto;
-        }
-
-        .big-button {
-            background-color: #2196F3;
-            color: white;
-            font-size: 24px;
-            padding: 40px 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
         .big-button:hover {
-            background-color: #1976D2;
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .imgCopertina {
+            width: 50px;
+        }
+
+        .top-libri-section {
+            margin-top: 20px;
+        }
+
+        .top-libri-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -65,22 +70,46 @@
         </form>
     </div>  
 
+     <!-- Pulsanti in linea -->
     <div class="container">
-        <form th:action="@{/profilo}" method="get">
-            <button class="big-button">Profilo</button>
+        <form th:action="@{/preProfilo}" method="get">
+            <button class="big-button" type="submit">Profilo</button>
         </form>
 
         <form th:action="@{/libri}" method="get">
-            <button class="big-button">Libri</button>
+            <button class="big-button" type="submit">Libri</button>
         </form>
 
         <form th:action="@{/challenge}" method="get">
-            <button class="big-button">Challenge</button>
+            <button class="big-button" type="submit">Challenge</button>
         </form>
+    </div>
 
-        <form th:action="@{/utenti}" method="get">
-            <button class="big-button">Utenti</button>
-        </form>
+    <!-- Sezione Top 3 Libri più letti -->
+    <div class="top-libri-section">
+        <div class="top-libri-title">Top 3 Libri più letti</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titolo</th>
+                    <th>Genere</th>
+                    <th>Autore</th>
+                    <th>Letture</th>
+                    <th>Copertina</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="libro : ${topLibri}">
+                    <td th:text="${libro.id}">ID</td>
+                    <td th:text="${libro.titolo}">Titolo</td>
+                    <td th:text="${libro.genere}">Genere</td>
+                    <td th:text="${libro.autore}">Autore</td>
+                    <td th:text="${libro.letture}">Letture</td>
+                    <td><img class="imgCopertina" th:src="${libro.copertina}" alt="copertina"/></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
 </body>

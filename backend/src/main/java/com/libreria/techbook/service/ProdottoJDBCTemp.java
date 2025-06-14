@@ -168,6 +168,7 @@ public class ProdottoJDBCTemp {
                         Storico storico = new Storico();
                         storico.setIdChallange(rs.getInt("id_challange"));
                         storico.setData(rs.getDate("data").toLocalDate());
+                        storico.setDataFine(rs.getDate("data_fine").toLocalDate());
                         storico.setNomeChallange(rs.getString("nome_challange"));
                         storico.setCondizione(rs.getInt("condizione"));
                         storico.setNomeVincitore(rs.getString("nome_vincitore"));
@@ -323,6 +324,7 @@ public class ProdottoJDBCTemp {
         String query = "CREATE TABLE storico_challange (" +
                 "id_challange INT AUTO_INCREMENT PRIMARY KEY," +
                 "data DATE," +
+                "data_fine DATE," +
                 "nome_challange VARCHAR(50)," +
                 "condizione INT," +
                 "nome_vincitore VARCHAR(50)," +
@@ -363,18 +365,23 @@ public class ProdottoJDBCTemp {
 
     if (count != null && count > 0) {
         System.out.println("Il libro è già presente nella libreria.");
-        return; // oppure lancia un'eccezione custom se preferisci
+        return; 
     }
         String query = "SELECT * FROM libri WHERE id = ?";
         Prodotto libro = jdbcTemplateObject.queryForObject(query, new BeanPropertyRowMapper<>(Prodotto.class), idLibro);
         String titoloLibro = libro.getTitolo();
         String genereLibro = libro.getGenere();
         String autoreLibro = libro.getAutore();
-        int lettureLibro = libro.getLetture();
+       
         String copertinaLibro = libro.getCopertina();
-        String queryInsert = "INSERT INTO " + nomeLibreria + " (idLibro, TitoloLibro, genereLibro, autoreLibro, lettureLibro, copertinaLibro) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplateObject.update(queryInsert, idLibro, titoloLibro, genereLibro, autoreLibro, lettureLibro, copertinaLibro);
+        String queryInsert = "INSERT INTO " + nomeLibreria + " (idLibro, TitoloLibro, genereLibro, autoreLibro, copertinaLibro) VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplateObject.update(queryInsert, idLibro, titoloLibro, genereLibro, autoreLibro, copertinaLibro);
         
+    }
+
+    public Prodotto getLibroById(int idLibro) {
+        String query = "SELECT * FROM libri WHERE id = ?";
+        return jdbcTemplateObject.queryForObject(query, new BeanPropertyRowMapper<>(Prodotto.class), idLibro);
     }
 
     
@@ -532,10 +539,10 @@ public class ProdottoJDBCTemp {
         jdbcTemplateObject.update(query, challange.getDataInizio(), challange.getNomePartecipante(), challange.getPunteggio());
     }
 
-     public void insertStoricoCallange(Storico storico, LocalDate data,  String nomeChallange, int condizione, String nomeVincitore, int punteggio, int stato) {
+     public void insertStoricoCallange(Storico storico, LocalDate data, LocalDate dataFine,  String nomeChallange, int condizione, String nomeVincitore, int punteggio, int stato) {
         
-        String query = "INSERT INTO storico_challange (data, nome_challange, condizione, nome_vincitore, punti, stato) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplateObject.update(query, storico.getData(), storico.getNomeChallange(), storico.getCondizione(), storico.getNomeVincitore(), storico.getPunti(), storico.getStato());
+        String query = "INSERT INTO storico_challange (data, data_fine, nome_challange, condizione, nome_vincitore, punti, stato) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplateObject.update(query, storico.getData(), storico.getDataFine(), storico.getNomeChallange(), storico.getCondizione(), storico.getNomeVincitore(), storico.getPunti(), storico.getStato());
     }
     
     // Metodo per eseguire query DDL  

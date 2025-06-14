@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Leggi: ' + ${libro.titolo}">Leggi Libro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+
+        .libro-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .copertina {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            margin-bottom: 30px;
+        }
+
+        .info {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .letture {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 40px;
+        }
+
+        .btn-conferma {
+            margin-top: 30px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-conferma:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="libro-container">
+    <h1 th:text="${libro.titolo}">Titolo Libro</h1>
+
+    <img class="copertina" th:src="${libro.copertina}" alt="Copertina del libro"/>
+
+    <div class="info">
+        <p><strong>Autore:</strong> <span th:text="${libro.autore}">Autore</span></p>
+        <p><strong>Genere:</strong> <span th:text="${libro.genere}">Genere</span></p>
+    </div>
+
+    <div class="letture">
+        Letture totali: <span th:text="${libro.letture}">0</span>
+    </div>
+
+    <form th:action="@{/confermaLettura}" method="post">
+        <input type="hidden" name="idLibro" th:value="${libro.id}">
+        <button type="submit" class="btn-conferma">Conferma Lettura</button>
+    </form>
+</div>
+
+</body>
+</html>

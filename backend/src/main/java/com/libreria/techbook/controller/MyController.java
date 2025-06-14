@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -121,6 +122,7 @@ public class MyController {
                               Model model,
                               HttpSession session) {
         List<User> listUsers = prodottoJDBCTemp.ritornaUsers();
+        List<Prodotto> listProdotto = prodottoJDBCTemp.ritornaProdotto();
 
         for (User user : listUsers) {
             if((user.getUsername().equals(username) && username.equals("admin")) && (user.getPassword().equals(password) && password.equals("admin"))) {
@@ -129,6 +131,12 @@ public class MyController {
             }
             else if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 session.setAttribute("userLoggato", user);  // memorizza l'utente in sessione come utente
+                List<Prodotto> topLibri = listProdotto.stream()
+                .sorted((p1, p2) -> Integer.compare(p2.getLetture(), p1.getLetture()))
+                .limit(3)
+                .collect(Collectors.toList());
+
+                model.addAttribute("topLibri", topLibri);
                 model.addAttribute("userLoggato", user);
                 return "vetrinaLogin";
             }
@@ -177,7 +185,41 @@ public class MyController {
     }
 
     /**
-     * Mostra la pagina del profilo dell'utente loggato, visualizzando le informazioni dell'utente e la lista delle librerie associate all'utente.
+     * Mostra la pagina pre-profilo dell'utente, visualizzando le informazioni dell'utente e offrendo la possibilita' di accedere
+     * alla sua libreria o di creare una challenge.
+     * @param model il modello passato alla vista
+     * @param session l'oggetto session contenente l'utente corrente
+     * @return la stringa "preProfiloPage" che indica la pagina da visualizzare
+     */
+    @GetMapping("/preProfilo")
+    public String getPreProfilo(Model model,
+                              HttpSession session) {
+        User userLoggato = (User) session.getAttribute("userLoggato");
+        model.addAttribute("userLoggato", userLoggato);
+        return "preProfiloPage";
+    }
+
+    /**
+     * Mostra la pagina della libreria dell'utente loggato.
+     * La funzione recupera la lista dei libri presenti nella libreria dell'utente
+     * e la passa alla vista "libreriaPage" insieme all'oggetto utente.
+     * @param model il modello passato alla vista
+     * @param session la sessione dell'utente corrente
+     * @return la stringa "libreriaPage" che indica la pagina da visualizzare
+     */
+    @GetMapping("/libreria")
+    public String getLibreria(Model model, HttpSession session) {
+        User userLoggato = (User) session.getAttribute("userLoggato");
+        ArrayList<LibreriaUser> listaLibrerie = prodottoJDBCTemp.ritornaLibreria(userLoggato.getNomeLibreria());
+        model.addAttribute("userLoggato", userLoggato);
+        model.addAttribute("listaLibrerie", listaLibrerie);
+        return "libreriaPage";
+    }
+    
+    
+
+    /**
+     * Mostra la pagina del profilo dell'utente loggato, visualizzando le informazioni dell'utente.
      * @param model il modello passato alla vista
      * @param session la sessione dell'utente corrente
      * @return la stringa "profiloPage" che indica la pagina da visualizzare
@@ -186,20 +228,19 @@ public class MyController {
     public String getProfilo(Model model,
                               HttpSession session) {
         User userLoggato = (User) session.getAttribute("userLoggato");
-        ArrayList<LibreriaUser> listaLibrerie = prodottoJDBCTemp.ritornaLibreria(userLoggato.getNomeLibreria());
-
         model.addAttribute("userLoggato", userLoggato);
-        model.addAttribute("listaLibrerie", listaLibrerie);
-
         return "profiloPage";
     }
 
+    /**
+     * Mostra la pagina di conferma dell'eliminazione dell'utente loggato.
+     * La funzione reindirizza alla pagina di conferma dell'eliminazione dell'utente.
+     * @param model il modello passato alla vista
+     * @return la stringa "confermaEliminazioneUserPage" che indica la pagina da visualizzare
+     */
     @PostMapping("eliminaProfilo")
     public String getEliminaProfilo(Model model) {
-        
-        
-    
-        return "confermaEliminazioneUserPage";
+         return "confermaEliminazioneUserPage";
     }
 
     
@@ -256,11 +297,13 @@ public class MyController {
      * @return la stringa "/libriPage" che indica la pagina da visualizzare
      */
     @PostMapping("/aggiungiLibro")
-    public String aggiungiLibro(@RequestParam("idLibro") int idLibro, HttpSession session) {
+    public String aggiungiLibro(@RequestParam("idLibro") int idLibro,Model model, HttpSession session) {
         User user = (User) session.getAttribute("userLoggato");
         if (user != null) {
             prodottoJDBCTemp.aggiungiLibroAllaLibreria(user.getNomeLibreria(), idLibro);
     }
+     ArrayList<Prodotto> listaLibri = prodottoJDBCTemp.ritornaProdotto();
+        model.addAttribute("listaLibri", listaLibri);
     return "/libriPage"; // oppure altra vista
     }
     
@@ -277,7 +320,7 @@ public class MyController {
  * @return la stringa "/profiloPage" o "/" che indica la pagina da visualizzare
  */
     @PostMapping("/rimuoviLibro")
-    public String rimuoviLibro(@RequestParam("idLibro") int idLibro,Model model, HttpSession session) {
+    public String rimuoviLibro(@RequestParam("idLibro") int idLibro, Model model, HttpSession session) {
         User user = (User) session.getAttribute("userLoggato");
             if (user != null) {
                 try {
@@ -290,16 +333,55 @@ public class MyController {
 
                 model.addAttribute("userLoggato", user);
                 model.addAttribute("listaLibrerie", listaLibrerie);
-                return "/profiloPage"; 
+                return "/libreriaPage"; 
             }
     
        return "/";
     }
 
+    /**
+     * Mostra la pagina di lettura di un libro specificato.
+     * La funzione riceve come parametro l'id del libro da visualizzare e verifica se l'utente è loggato.
+     * Se l'utente è loggato, recupera il libro con l'id specificato e lo aggiunge al modello.
+     * Restituisce la stringa "leggiLibroPage" che indica la pagina da visualizzare con il libro.
+     * @param idLibro l'id del libro da visualizzare
+     * @param model il modello passato alla vista
+     * @param session l'oggetto session contenente l'utente corrente
+     * @return la stringa "leggiLibroPage" che indica la pagina da visualizzare
+     */
+    @GetMapping("/leggiLibro")
+    public String getMethodName(@RequestParam("idLibro") int idLibro, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("userLoggato");
+        
+      
+        Prodotto libro = prodottoJDBCTemp.getLibroById(idLibro);
+            
+        model.addAttribute("libro", libro);
+        
+
+        return "leggiLibroPage";
+    }
+    
+
 
     @GetMapping("/creaChallenge")
-    public String getCreaChallenge(@RequestParam ("challange") String challenge,@RequestParam ("opzione") String condizioneSelect, Model model, HttpSession session) {
+    public String getCreaChallenge(@RequestParam ("challange") String challenge, @RequestParam ("tempo") String tempoSelect, @RequestParam ("opzione") String condizioneSelect, Model model, HttpSession session) {
         int condizione = 0;
+        int tempo = 0;
+        switch (tempoSelect) {
+            case "settimana":
+                tempo = 7;
+                break;
+            case "dieci":
+                tempo = 10;
+                break;
+            case "mese":
+                tempo = 30;
+                break;
+            default:
+                tempo = 5;
+                break;
+        }
         switch (condizioneSelect) {
             case "nessuna":
                 condizione = 0;
@@ -326,6 +408,7 @@ public class MyController {
         prodottoJDBCTemp.insertUserCallange(challengeName, newChallange, newChallange.getDataInizio(), newChallange.getNomePartecipante(), newChallange.getPunteggio());
 
         storico.setData(newChallange.getDataInizio());
+        storico.setDataFine(newChallange.getDataInizio().plusDays(tempo));
         storico.setNomeChallange(challengeName);
         storico.setCondizione(condizione);
         storico.setNomeVincitore("In Corso");
@@ -336,9 +419,9 @@ public class MyController {
         }else {
             alertStato = "Terminato";
         }
-        prodottoJDBCTemp.insertStoricoCallange(storico, storico.getData(), storico.getNomeChallange(), storico.getCondizione(), storico.getNomeVincitore(), storico.getPunti(), storico.getStato());
+        prodottoJDBCTemp.insertStoricoCallange(storico, storico.getData(), storico.getDataFine(), storico.getNomeChallange(), storico.getCondizione(), storico.getNomeVincitore(), storico.getPunti(), storico.getStato());
 
-        model.addAttribute("dataFine", newChallange.getDataInizio().plusDays(10));
+        model.addAttribute("dataFine", storico.getDataFine());
         model.addAttribute("newChallange", newChallange);
         model.addAttribute("storico", storico);
         model.addAttribute("alertStato", alertStato);

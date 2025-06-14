@@ -7,6 +7,8 @@ public class Storico {
 
     private int idChallange;
     private LocalDate data;
+    private LocalDate dataFine;
+   
     private String nomeChallange;
     private int condizione;
     private String nomeVincitore;
@@ -27,6 +29,12 @@ public class Storico {
     }
     public void setData(LocalDate data) {
         this.data = data;
+    }
+     public LocalDate getDataFine() {
+        return dataFine;
+    }
+    public void setDataFine(LocalDate dataFine) {
+        this.dataFine = dataFine;
     }
     public String getNomeChallange() {
         return nomeChallange;
