@@ -74,25 +74,30 @@
     <table>
         <thead>
             <tr>
-                <th>ID challanger</th>
+                <th>ID challange</th>
                 <th>Data</th>
-                <th>Nome challanger</th>
+                <th>Nome challange</th>
                 <th>Condizione</th>
                 <th>vincitore</th>
                 <th>Punti</th>
                 <th>Stato</th>
             </tr>
         </thead>
-        <tbody>
-
+       <tbody>
+            <!-- Riga per ogni challenge -->
             <tr th:each="challange : ${listaStorico}">
                 <td th:text="${challange.idChallange}">ID</td>
                 <td th:text="${challange.data}">Data</td>
-                <td th:text="${challange.nomeChallangel}">nome</td>
+                <td th:text="${challange.nomeChallange}">nome</td>
                 <td th:text="${challange.condizione}">Condizione</td>
                 <td th:text="${challange.nomeVincitore}">Vincitore</td>
                 <td th:text="${challange.punti}">Punti</td>
                 <td th:text="${challange.stato == 0 ? 'in corso' : 'terminata'}">Stato</td>
+            </tr>
+
+            <!-- Riga visibile solo se la lista è vuota -->
+            <tr th:if="${#lists.isEmpty(listaStorico)}">
+                <td colspan="7">Nessuna challenge presente.</td>
             </tr>
         </tbody>
     </table>

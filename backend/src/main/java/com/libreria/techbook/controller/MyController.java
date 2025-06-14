@@ -61,6 +61,7 @@ public class MyController {
             ArrayList<Prodotto> lista = prodottoJDBCTemp.ritornaProdotto();
             List<Storico> listaStorico = prodottoJDBCTemp.ritornaStorico();
             model.addAttribute("listaStorico", listaStorico);
+            System.out.println("Storico ricevuto dal DB: " + listaStorico.size());
             model.addAttribute("listUsers", listUsers);
             model.addAttribute("lista", lista);
             return "vetrinaLogout";

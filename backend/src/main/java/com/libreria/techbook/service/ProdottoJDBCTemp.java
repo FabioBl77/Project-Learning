@@ -321,7 +321,7 @@ public class ProdottoJDBCTemp {
      	
         // Query SQL per creare una nuova tabella
         String query = "CREATE TABLE storico_challange (" +
-                "id_challanger INT AUTO_INCREMENT PRIMARY KEY," +
+                "id_challange INT AUTO_INCREMENT PRIMARY KEY," +
                 "data DATE," +
                 "nome_challange VARCHAR(50)," +
                 "condizione INT," +
