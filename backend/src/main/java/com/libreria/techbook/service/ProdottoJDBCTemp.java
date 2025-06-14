@@ -2,7 +2,9 @@ package com.libreria.techbook.service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +14,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 
+import com.libreria.techbook.model.Challange;
 import com.libreria.techbook.model.LibreriaUser;
 import com.libreria.techbook.model.Prodotto;
+import com.libreria.techbook.model.Storico;
 import com.libreria.techbook.model.User;
 
 @Component
@@ -51,6 +55,7 @@ public class ProdottoJDBCTemp {
                         prodotto.setTitolo(rs.getString("titolo"));
                         prodotto.setGenere(rs.getString("genere"));
                         prodotto.setAutore(rs.getString("autore"));
+                        prodotto.setLetture(rs.getInt("letture"));
                         prodotto.setCopertina(rs.getString("copertina"));
                         
                       
@@ -104,6 +109,83 @@ public class ProdottoJDBCTemp {
             return new ArrayList<>();
         }
     }
+  
+    /**
+     * Ritorna una lista di oggetti Challange contenenti i dati presenti
+     * nella tabella "nomeChallange" del database.
+     * La lista contiene oggetti di tipo Challange, ciascuno dei quali
+     * rappresenta una partita di una challenge con i propri attributi:
+     * idRecord, dataInizio, nomePartecipante e punteggio.
+     * I dati sono ordinati in base al punteggio decrescente.
+     * Se si verifica un errore durante l'esecuzione della query, viene
+     * ritornata una lista vuota.
+     * @param nomeChallange nome della challenge
+     * @return lista di oggetti Challange
+     */
+    public ArrayList<Challange> ritornaChallange(String nomeChallange) { 
+    try {
+        String query = "SELECT * FROM " + nomeChallange + " ORDER BY punteggio DESC";
+        return jdbcTemplateObject.query(query, new ResultSetExtractor<ArrayList<Challange>>() {
+            @Override
+            public ArrayList<Challange> extractData(ResultSet rs) throws SQLException {
+                ArrayList<Challange> listaChallange = new ArrayList<>();
+                while (rs.next()) {
+                    Challange challange = new Challange();
+                    challange.setIdRecord(rs.getInt("id_record"));
+                    challange.setDataInizio(rs.getDate("data_inizio").toLocalDate());
+                    challange.setNomePartecipante(rs.getString("nome_partecipante"));
+                    challange.setPunteggio(rs.getInt("punteggio"));
+                    listaChallange.add(challange);
+                }
+                return listaChallange;
+            }
+        });
+    } catch (Exception e) {
+        // Gestione dell'errore
+        return new ArrayList<>();
+    }
+}
+
+
+    /**
+     * Ritorna una lista di oggetti Storico contenenti i dati presenti
+     * nella tabella "storico_challanger" del database.
+     * La lista contiene oggetti di tipo Storico, ciascuno dei quali
+     * rappresenta una partita con i propri attributi: id, data, idChallange,
+     * nomeChallange, nomeVincitore, punti.
+     * Se si verifica un errore durante l'esecuzione della query, viene
+     * ritornata una lista vuota.
+     * @return lista di oggetti Storico
+     */
+    public ArrayList<Storico> ritornaStorico() {
+        try {
+            String query = "SELECT * FROM storico_challange";
+            return jdbcTemplateObject.query(query, new ResultSetExtractor<ArrayList<Storico>>() {
+                @Override
+                public ArrayList<Storico> extractData(ResultSet rs) throws SQLException {
+                    ArrayList<Storico> listaStorico = new ArrayList<>();
+                    while (rs.next()) {
+                        Storico storico = new Storico();
+                        storico.setIdChallange(rs.getInt("id_challange"));
+                        storico.setData(rs.getDate("data").toLocalDate());
+                        storico.setNomeChallange(rs.getString("nome_challange"));
+                        storico.setCondizione(rs.getInt("condizione"));
+                        storico.setNomeVincitore(rs.getString("nome_vincitore"));
+                        storico.setPunti(rs.getInt("punti"));
+                        storico.setStato(rs.getInt("stato"));
+                        
+                        
+                      
+                        listaStorico.add(storico);
+                    }
+                    return listaStorico;
+                }
+            });
+        } catch (Exception e) {
+            // Gestione dell'errore
+            return new ArrayList<>();
+        }
+    }
       
     /**
      * Crea una nuova tabella chiamata "libri" nel database 
@@ -125,6 +207,7 @@ public class ProdottoJDBCTemp {
                 "titolo VARCHAR(50)," +
                 "genere VARCHAR(50)," +
                 "autore VARCHAR(50)," +
+                "letture INT," +
                 "copertina VARCHAR(1000)" +
                 ")";
         			
@@ -187,6 +270,83 @@ public class ProdottoJDBCTemp {
         
        
     }
+    /**
+     * Crea una nuova tabella chiamata "nomeChallanger" nel database 
+     * se essa non esiste gia. La tabella ha 4 colonne: 
+     * id_record, data_inizio, nome_partecipante, punteggio.
+     * La tabella e' utilizzata per contenere i record 
+     * delle partecipazioni dell'utente alle sfide.
+     * 
+     * @param nomeChallanger il nome della tabella da creare
+     * @author Alessandro Bugatti
+     */
+    public void creaTabellaChallange(String nomeChallange) {
+  
+        
+    	// Query SQL per verificare se la tabella esiste
+        String checkTableQuery = "SHOW TABLES LIKE '" + nomeChallange + "'";
+     	
+     	
+        // Query SQL per creare una nuova tabella
+        String query = "CREATE TABLE " + nomeChallange + " (" +
+                "id_record INT AUTO_INCREMENT PRIMARY KEY," +
+                "data_inizio DATE," +
+                "nome_partecipante VARCHAR(50)," +
+                "punteggio INT" +
+                ")";
+        			
+        
+        try {
+            // Esegui la query di controllo
+            List<Map<String, Object>> tables = jdbcTemplateObject.queryForList(checkTableQuery);
+
+            // Se la tabella non esiste, crea la tabella
+            if (tables.isEmpty()) {
+                jdbcTemplateObject.execute(query);
+            } 
+        } catch (Exception e) {
+            // Gestione dell'errore
+            e.printStackTrace();
+        }
+        
+       
+    }
+
+    public void creaStoricoChallanger() {
+  
+
+    	// Query SQL per verificare se la tabella esiste
+        String checkTableQuery = "SHOW TABLES LIKE 'storico_challange'";
+     	
+     	
+        // Query SQL per creare una nuova tabella
+        String query = "CREATE TABLE storico_challange (" +
+                "id_challanger INT AUTO_INCREMENT PRIMARY KEY," +
+                "data DATE," +
+                "nome_challange VARCHAR(50)," +
+                "condizione INT," +
+                "nome_vincitore VARCHAR(50)," +
+                "punti INT," +
+                "stato INT" +
+                ")";
+        			
+        
+        try {
+            // Esegui la query di controllo
+            List<Map<String, Object>> tables = jdbcTemplateObject.queryForList(checkTableQuery);
+
+            // Se la tabella non esiste, crea la tabella
+            if (tables.isEmpty()) {
+                jdbcTemplateObject.execute(query);
+            } 
+        } catch (Exception e) {
+            // Gestione dell'errore
+            e.printStackTrace();
+        }
+        
+       
+    }
+
     
     
     /**
@@ -210,9 +370,10 @@ public class ProdottoJDBCTemp {
         String titoloLibro = libro.getTitolo();
         String genereLibro = libro.getGenere();
         String autoreLibro = libro.getAutore();
+        int lettureLibro = libro.getLetture();
         String copertinaLibro = libro.getCopertina();
-        String queryInsert = "INSERT INTO " + nomeLibreria + " (idLibro, TitoloLibro, genereLibro, autoreLibro, copertinaLibro) VALUES (?, ?, ?, ?, ?)";
-        jdbcTemplateObject.update(queryInsert, idLibro, titoloLibro, genereLibro, autoreLibro, copertinaLibro);
+        String queryInsert = "INSERT INTO " + nomeLibreria + " (idLibro, TitoloLibro, genereLibro, autoreLibro, lettureLibro, copertinaLibro) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplateObject.update(queryInsert, idLibro, titoloLibro, genereLibro, autoreLibro, lettureLibro, copertinaLibro);
         
     }
 
@@ -337,6 +498,19 @@ public class ProdottoJDBCTemp {
         return "libreria_" + nameLibreria;    
     }
 
+    /**
+     * Crea il nome della challenge derivante dal nome della challenge.
+     * Il nome della challenge viene creato sostituendo tutti i caratteri non alfanumerici
+     * del nome della challenge con la stringa vuota e convertendo il risultato in minuscolo.
+     * @param challangeName nome della challenge
+     * @return nome della challenge
+     */
+    public String creaChallangeName(String challangeName) {
+        String pulita = challangeName.replaceAll("[^a-zA-Z0-9]", "");
+        String nameChallange = pulita.toLowerCase();
+        return "challenge_" + nameChallange;    
+    }
+
     /* Metodo per creare un user */
     /**
      * Crea un nuovo utente nel database.
@@ -350,6 +524,18 @@ public class ProdottoJDBCTemp {
         
         String query = "INSERT INTO users (username, email, password, nomelibreria, punteggio) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplateObject.update(query, user.getUsername(), user.getEmail(), user.getPassword(), user.getNomeLibreria(), user.getPunteggio());
+    }
+
+    public void insertUserCallange(String nomeChallange, Challange challange, LocalDate dataInizio,  String nomePartecipante, int punteggio) {
+        
+        String query = "INSERT INTO " + nomeChallange + " (data_inizio, nome_partecipante, punteggio) VALUES (?, ?, ?)";
+        jdbcTemplateObject.update(query, challange.getDataInizio(), challange.getNomePartecipante(), challange.getPunteggio());
+    }
+
+     public void insertStoricoCallange(Storico storico, LocalDate data,  String nomeChallange, int condizione, String nomeVincitore, int punteggio, int stato) {
+        
+        String query = "INSERT INTO storico_challange (data, nome_challange, condizione, nome_vincitore, punti, stato) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplateObject.update(query, storico.getData(), storico.getNomeChallange(), storico.getCondizione(), storico.getNomeVincitore(), storico.getPunti(), storico.getStato());
     }
     
     // Metodo per eseguire query DDL  

@@ -1,7 +1,9 @@
 package com.libreria.techbook.controller;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+
 import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.libreria.techbook.model.Challange;
 import com.libreria.techbook.model.LibreriaUser;
 import com.libreria.techbook.model.Prodotto;
+import com.libreria.techbook.model.Storico;
 import com.libreria.techbook.model.User;
 import com.libreria.techbook.service.ProdottoJDBCTemp;
 
@@ -47,6 +51,7 @@ public class MyController {
         
         prodottoJDBCTemp.creaNuovaTabUsers();
         prodottoJDBCTemp.creaNuovaTabLibri();
+        prodottoJDBCTemp.creaStoricoChallanger();
 
         User userLoggato = (User) session.getAttribute("userLoggato");
         
@@ -54,6 +59,8 @@ public class MyController {
             // Utente non loggato
             List<User> listUsers = prodottoJDBCTemp.ritornaUsers();
             ArrayList<Prodotto> lista = prodottoJDBCTemp.ritornaProdotto();
+            List<Storico> listaStorico = prodottoJDBCTemp.ritornaStorico();
+            model.addAttribute("listaStorico", listaStorico);
             model.addAttribute("listUsers", listUsers);
             model.addAttribute("lista", lista);
             return "vetrinaLogout";
@@ -79,6 +86,17 @@ public class MyController {
     @GetMapping("/loginPage")
     public String loginPage() {
         return "loginPage";
+    }
+
+    /**
+     * Mostra la pagina di registrazione.
+     * La pagina di registrazione richiede all'utente di inserire le credenziali per creare un nuovo utente.
+     * La pagina e vuota e non effettua alcuna operazione.
+     * @return la pagina di registrazione
+     */
+    @GetMapping("/registerPage")
+    public String registerPage() {
+        return "registerPage";
     }
 
     /* Questa rotta serve per effettuare il login riceve i dati dalla pagina loginPage e li confronta per vedere se sono corretti
@@ -276,6 +294,75 @@ public class MyController {
     
        return "/";
     }
+
+
+    @GetMapping("/creaChallenge")
+    public String getCreaChallenge(@RequestParam ("challange") String challenge,@RequestParam ("opzione") String condizioneSelect, Model model, HttpSession session) {
+        int condizione = 0;
+        switch (condizioneSelect) {
+            case "nessuna":
+                condizione = 0;
+                break;
+            case "autore":
+                condizione = 1;
+                break;
+            case "genere":
+                condizione = 2;
+                break;
+            default:
+                condizione = 0;
+                break;
+        }
+        String alertStato;
+        User userLoggato = (User) session.getAttribute("userLoggato");
+        Storico storico = new Storico();
+        Challange newChallange = new Challange();
+        String challengeName = prodottoJDBCTemp.creaChallangeName(challenge);
+        prodottoJDBCTemp.creaTabellaChallange(challengeName);
+        newChallange.setDataInizio(LocalDate.now());
+        newChallange.setNomePartecipante(userLoggato.getUsername());
+        newChallange.setPunteggio(0);
+        prodottoJDBCTemp.insertUserCallange(challengeName, newChallange, newChallange.getDataInizio(), newChallange.getNomePartecipante(), newChallange.getPunteggio());
+
+        storico.setData(newChallange.getDataInizio());
+        storico.setNomeChallange(challengeName);
+        storico.setCondizione(condizione);
+        storico.setNomeVincitore("In Corso");
+        storico.setPunti(0);
+        storico.setStato(0);
+        if (storico.getStato() == 0) {
+            alertStato = "In Corso";
+        }else {
+            alertStato = "Terminato";
+        }
+        prodottoJDBCTemp.insertStoricoCallange(storico, storico.getData(), storico.getNomeChallange(), storico.getCondizione(), storico.getNomeVincitore(), storico.getPunti(), storico.getStato());
+
+        model.addAttribute("dataFine", newChallange.getDataInizio().plusDays(10));
+        model.addAttribute("newChallange", newChallange);
+        model.addAttribute("storico", storico);
+        model.addAttribute("alertStato", alertStato);
+
+
+
+        return "creaChallangeConfermata";
+    }
+
+    /* 
+    @GetMapping("/challenge")
+    public String getMethodName(@RequestParam ("challange") String challenge, Model model, HttpSession session) {
+        User userLoggato = (User) session.getAttribute("userLoggato");
+        ArrayList<Storico> listaStorico = prodottoJDBCTemp.ritornaStorico();
+        for (Storico storico : listaStorico) {
+         ArrayList<Challange> listaPartecipantiChallange = prodottoJDBCTemp.ritornaChallange(storico.getNomeChallange());
+        model.addAttribute("listaChallange", listaPartecipantiChallange);   
+            
+        }
+        
+        return "challengePage";
+    }
+    */
+    
+    
 
 
 

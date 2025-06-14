@@ -67,6 +67,16 @@
 
 <!-- Bottone per creare una challenge -->
 <form th:action="@{/creaChallenge}" method="get">
+    <label for="challange">Nome Challange:</label>
+    <input type="text" id="challange" name="challange" required>
+
+    <label for="opzione">Seleziona Condizione:</label>
+    <select id="opzione" name="opzione" required>
+        <option value="nessuna">Nessuna</option>
+        <option value="autore">Autore</option>
+        <option value="genere">Genere</option>
+    </select>
+
     <button type="submit" class="challenge-btn">Crea una Challenge</button>
 </form>
 

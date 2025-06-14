@@ -43,7 +43,7 @@
 <body>
     <div class="button-container">
         <a th:href="@{/loginPage}">Login</a>
-        <a th:href="@{/register}">Iscriviti</a>
+        <a th:href="@{/registerPage}">Iscriviti</a>
     </div>
 
     <h1>Home page utente NON loggato</h1>
@@ -70,6 +70,33 @@
         </tbody>
     </table>
 
+    <h1>Lista Challanger</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID challanger</th>
+                <th>Data</th>
+                <th>Nome challanger</th>
+                <th>Condizione</th>
+                <th>vincitore</th>
+                <th>Punti</th>
+                <th>Stato</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr th:each="challange : ${listaStorico}">
+                <td th:text="${challange.idChallange}">ID</td>
+                <td th:text="${challange.data}">Data</td>
+                <td th:text="${challange.nomeChallangel}">nome</td>
+                <td th:text="${challange.condizione}">Condizione</td>
+                <td th:text="${challange.nomeVincitore}">Vincitore</td>
+                <td th:text="${challange.punti}">Punti</td>
+                <td th:text="${challange.stato == 0 ? 'in corso' : 'terminata'}">Stato</td>
+            </tr>
+        </tbody>
+    </table>
+
     <h2>Lista Prodotti</h2>
     <table>
         <thead>
@@ -78,6 +105,7 @@
                 <th>Titolo</th>
                 <th>Genere</th>
                 <th>Autore</th>
+                <th>Letture</th>
                 <th>Copertina</th>
             </tr>
         </thead>
@@ -87,6 +115,7 @@
                 <td th:text="${prodotto.titolo}">Nome Prodotto</td>
                 <td th:text="${prodotto.genere}">Categoria</td>
                 <td th:text="${prodotto.autore}">Autore</td>
+                <td th:text="${prodotto.letture}">Letture</td>
                 <td><img class="imgCopertina" th:src="${prodotto.copertina}"></td>
             </tr>
         </tbody>

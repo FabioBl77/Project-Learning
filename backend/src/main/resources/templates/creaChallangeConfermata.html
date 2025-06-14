@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Conferma Creazione Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .buttons a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #4285f4;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .buttons a:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Challenge creata con successo!</h2>
+
+    <table>
+        <tr>
+            
+            <th>Data Inizio</th>
+            <th>Nome Partecipante</th>
+            <th>Punteggio</th>
+        </tr>
+        <tr>
+            
+            <td th:text="${#temporals.format(newChallange.dataInizio, 'dd/MM/yyyy')}">02/06/2025</td>
+            <td th:text="${newChallange.nomePartecipante}">Mario Rossi</td>
+            <td th:text="${newChallange.punteggio}">100</td>
+        </tr>
+    </table>
+       <h3>Questa Challange sarà attiva fino al <span th:text="${#temporals.format(dataFine, 'dd/MM/yyyy')}"></span></span></h3>
+    <div class="buttons">
+        <a th:href="@{/profilo}">Torna alla User Page</a>
+        <a th:href="@{/challangePage}">Vai alla Challenge Page</a>
+    </div>
+
+</body>
+</html>

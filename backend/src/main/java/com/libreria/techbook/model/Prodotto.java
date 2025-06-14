@@ -6,6 +6,7 @@ public class Prodotto {
 	private String titolo;
 	private String genere;
 	private String autore;
+	private int letture;
 	private String copertina;
 	
 	public int getId() {
@@ -31,6 +32,12 @@ public class Prodotto {
 	}
 	public void setAutore(String autore) {
 		this.autore = autore;
+	}
+	public int getLetture() {
+		return letture;
+	}
+	public void setLetture(int letture) {
+		this.letture = letture;
 	}
 	public String getCopertina() {
 		return copertina;
