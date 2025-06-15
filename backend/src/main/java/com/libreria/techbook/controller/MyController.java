@@ -516,7 +516,63 @@ public String addPartecipante(Model model, @RequestParam("nomeChallange") String
     return "confermaPartecipazione";
 }
 
+ @GetMapping("/classificaGlobale") 
+public String getClassificaGlobale(Model model, HttpSession session) {
+    User userLoggato = (User) session.getAttribute("userLoggato");
+    model.addAttribute("userLoggato", userLoggato);
+
+    List<User> listUsers = prodottoJDBCTemp.ritornaUsers();
+
+    // Ordina per punteggio decrescente
+    listUsers.sort((u1, u2) -> Integer.compare(u2.getPunteggio(), u1.getPunteggio()));
+
+    model.addAttribute("classifica", listUsers);
+
+    return "classificaGlobalePage";
+}
+
+@GetMapping("/mieChallange")
+public String getMieChallange(Model model, HttpSession session) {
+    User userLoggato = (User) session.getAttribute("userLoggato");
+    List<Storico> listaStorico = prodottoJDBCTemp.ritornaStorico();
+    List<Challange> listaMieChallange = new ArrayList<>();
+    List<Storico> listaMiaStorico = new ArrayList<>();
+    for (Storico storico : listaStorico) {
+       List<Challange> challange = prodottoJDBCTemp.ritornaChallange(storico.getNomeChallange());
+        for (Challange c : challange) {
+            if (c.getNomePartecipante().equals(userLoggato.getUsername())) {
+                listaMieChallange.add(c);
+                listaMiaStorico.add(storico);
+            }
+        }
+    }
+    System.out.println(listaMiaStorico.size());
     
+    model.addAttribute("userLoggato", userLoggato);
+    model.addAttribute("listaMioStorico", listaMiaStorico);
+
+    return "mieChallengePage";
+}
+
+@PostMapping("/dettagliMiaChallange")
+public String getDettagliMiaChallange(Model model, HttpSession session,
+                                   @RequestParam("nomeChallange") String nomeChallange,
+                                   @RequestParam("fineChallange") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fineChallange) {
+    User userLoggato = (User) session.getAttribute("userLoggato");
+    List<Challange> challange = prodottoJDBCTemp.ritornaChallange(nomeChallange);
+
+    // Ordina la lista per punteggio decrescente
+    challange.sort(Comparator.comparingInt(Challange::getPunteggio).reversed());
+
+    model.addAttribute("challange", challange);
+    model.addAttribute("userLoggato", userLoggato);
+    model.addAttribute("nomeChallange", nomeChallange);
+    model.addAttribute("fineChallange", fineChallange);
+    return "dettagliMiaChallangePage";
+}
+
+
+
     
 
 

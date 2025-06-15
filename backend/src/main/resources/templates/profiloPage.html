@@ -50,32 +50,5 @@
     <button type="submit" class="delete-profile-btn">Elimina Profilo</button>
 </form>
 
-
-
-
-<!-- Bottone per creare una challenge -->
-<form th:action="@{/creaChallenge}" method="get">
-    <label for="challange">Nome Challange:</label>
-    <input type="text" id="challange" name="challange" required>
-
-    <label for="opzione">Seleziona Condizione:</label>
-    <select id="opzione" name="opzione" required>
-        <option value="nessuna">Nessuna</option>
-        <option value="autore">Autore</option>
-        <option value="genere">Genere</option>
-    </select>
-
-    <label for="opzione">Seleziona Tempo:</label>
-    <select id="opzione" name="tempo" required>
-        <option value="settimana">7 giorni</option>
-        <option value="dieci">10 giorni</option>
-        <option value="mese">30 giorni</option>
-    </select>
-
-    <button type="submit" class="challenge-btn">Crea una Challenge</button>
-</form>
-
-
-
 </body>
 </html>

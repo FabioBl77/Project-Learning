@@ -6,33 +6,36 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <nav style="background-color: #007bff; padding: 10px;">
-  <form th:action="@{/}" method="get" style="display: inline;">
-    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
-      Home
-    </button>
-  </form>
+<nav style="background-color: #007bff; padding: 10px;">
+      <form th:action="@{/}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+          Home
+        </button>
+      </form>
 
-  <form th:action="@{/preProfilo}" method="get" style="display: inline;">
-    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
-      Profilo
-    </button>
-  </form>
+      <form th:action="@{/preProfilo}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+          Profilo
+        </button>
+      </form>
 
-  <form th:action="@{/preChallenge}" method="get" style="display: inline;">
-    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
-      Challenge
-    </button>
-  </form>
-  
-</nav>
+      <form th:action="@{/preChallenge}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
+          Challenge
+        </button>
+      </form>
+      
+    </nav>
+
+    <div class="header">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
 
     <h1>Libri disponibili</h1>
 
-    <!-- Pulsante Logout -->
-    <form th:action="@{/logout}" method="get" style="margin-bottom: 20px;">
-        <button type="submit">Logout</button>
-    </form>
+   
 
     <!-- Tabella dei libri -->
     <table border="1" cellpadding="10">

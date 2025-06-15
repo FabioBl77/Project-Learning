@@ -33,6 +33,33 @@
     </style>
 </head>
 <body>
+    <nav style="background-color: #007bff; padding: 10px;">
+      <form th:action="@{/}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+          Home
+        </button>
+      </form>
+
+      <form th:action="@{/preProfilo}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+          Profilo
+        </button>
+      </form>
+
+      <form th:action="@{/preChallenge}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
+          Challenge
+        </button>
+      </form>
+      
+    </nav>
+
+    <div class="header">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+
     <div class="message-box">
         <p>Utente <strong th:text="${nomeUtente}">nome utente</strong> stai già partecipando alla <strong th:text="${nomeChallange}">nome challange</strong>.</p>
         <p>Seleziona un'altra Challenge dove tu non stia partecipando.</p>

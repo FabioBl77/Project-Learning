@@ -1,43 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <title>Conferma Partecipazione</title>
+    <meta charset="UTF-8">
+    <title>Classifica Globale</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f7f9fc;
-            color: #333;
+            margin: 30px;
+            background-color: #f9f9f9;
         }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 30px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+
+        h1 {
+            color: #333;
             text-align: center;
         }
-        h1 {
-            color: #28a745;
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
         }
-        p {
-            font-size: 1.2rem;
-            margin-top: 20px;
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
         }
-        a.button {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 25px;
+
+        th {
+            background-color: #4285f4;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .back-button {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            padding: 10px 20px;
             background-color: #007bff;
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
+            text-align: center;
         }
-        a.button:hover {
+
+        .back-button:hover {
             background-color: #0056b3;
         }
     </style>
@@ -69,12 +82,27 @@
             <button type="submit" class="logout-btn">Logout</button>
         </form>
     </div>
-    <div class="container">
-        <h1>Complimenti <span th:text="${userLoggato.username}">Utente</span>!</h1>
-        <p>Adesso stai partecipando alla <strong th:text="${nomeChallange}">Nome Challenge</strong> che durerà fino al 
-            <span th:text="${#temporals.format(fineChallange, 'dd/MM/yyyy')}">10/06/2025</span>.</p>
-        
-        <a class="button" th:href="@{/vediChallange}">Vai alla pagina Challenge</a>
-    </div>
+
+<h1>Classifica Globale Utenti</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Posizione</th>
+            <th>Username</th>
+            <th>Punteggio</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="utente, stat : ${classifica}">
+            <td th:text="${stat.index + 1}">1</td>
+            <td th:text="${utente.username}">Mario</td>
+            <td th:text="${utente.punteggio}">150</td>
+        </tr>
+    </tbody>
+</table>
+
+<a href="/" class="back-button">Torna alla Home</a>
+
 </body>
 </html>

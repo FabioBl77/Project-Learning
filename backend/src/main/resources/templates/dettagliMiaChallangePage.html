@@ -11,7 +11,7 @@
 
         table {
             border-collapse: collapse;
-            width: 50%;
+            width: 60%;
             margin-bottom: 20px;
         }
 
@@ -40,7 +40,7 @@
     </style>
 </head>
 <body>
-  <nav style="background-color: #007bff; padding: 10px;">
+<nav style="background-color: #007bff; padding: 10px;">
       <form th:action="@{/}" method="get" style="display: inline;">
         <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
           Home
@@ -67,27 +67,35 @@
         </form>
     </div>
 
-    <h2>Challenge creata con successo!</h2>
+<h1>Dettagli Challenge</h1>
 
-    <table>
+<table>
+    <thead>
         <tr>
-            
+            <th>Posizione</th> <!-- Colonna posizione -->
             <th>Data Inizio</th>
             <th>Nome Partecipante</th>
             <th>Punteggio</th>
         </tr>
-        <tr>
-            
-            <td th:text="${#temporals.format(newChallange.dataInizio, 'dd/MM/yyyy')}">02/06/2025</td>
-            <td th:text="${newChallange.nomePartecipante}">Mario Rossi</td>
-            <td th:text="${newChallange.punteggio}">100</td>
+    </thead>
+    <tbody>
+        <tr th:each="partecipante, stat : ${challange}">
+            <td th:text="${stat.index + 1}">1</td> <!-- Numero progressivo -->
+            <td th:text="${#temporals.format(partecipante.dataInizio, 'dd/MM/yyyy')}">02/06/2025</td>
+            <td th:text="${partecipante.nomePartecipante}">Mario Rossi</td>
+            <td th:text="${partecipante.punteggio}">100</td>
         </tr>
-    </table>
-       <h3>Questa Challange sarà attiva fino al <span th:text="${#temporals.format(dataFine, 'dd/MM/yyyy')}"></span></h3>
-    <div class="buttons">
-        <a th:href="@{/profilo}">Torna alla User Page</a>
-        <a th:href="@{/challangePage}">Vai alla Challenge Page</a>
-    </div>
+    </tbody>
+</table>
+
+
+
+<h3>Questa Challenge sarà attiva fino al <span th:text="${#temporals.format(fineChallange, 'dd/MM/yyyy')}">10/06/2025</span></h3>
+
+<div class="buttons">
+   
+    <a th:href="@{/mieChallange}">Vai alla Mia Challenge Page</a>
+</div>
 
 </body>
 </html>
