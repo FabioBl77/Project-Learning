@@ -30,27 +30,15 @@
 </nav>
 
 <div class="header">
-    <h2>Benvenuto, <span th:text="${userLoggato.username}">Utente</span></h2>
+   
     <form th:action="@{/logout}" method="post">
         <button type="submit" class="logout-btn">Logout</button>
     </form>
 </div>
 
-<div class="user-info">
-    <h3>Informazioni Profilo</h3>
-    <p><strong>Username:</strong> <span th:text="${userLoggato.username}">username</span></p>
-    <p><strong>Email:</strong> <span th:text="${userLoggato.email}">email</span></p>
-    <p><strong>Nome Libreria:</strong> <span th:text="${userLoggato.nomeLibreria}">nomeLibreria</span></p>
-    <p><strong>Punteggio:</strong> <span th:text="${userLoggato.punteggio}">0</span></p>
-</div>
-
-<!-- Bottone per eliminare il profilo -->
-<form th:action="@{/eliminaProfilo}" method="post">
-    <input type="hidden" name="userId" th:value="${userLoggato.userId}">
-    <button type="submit" class="delete-profile-btn">Elimina Profilo</button>
-</form>
 
 
+<h1>Crea la tua Challange personalizzata</h1>
 
 
 <!-- Bottone per creare una challenge -->

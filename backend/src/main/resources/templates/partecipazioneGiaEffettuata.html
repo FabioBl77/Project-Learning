@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Avviso Partecipazione</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            text-align: center;
+        }
+        .message-box {
+            background-color: #ffdddd;
+            border: 1px solid #ff5c5c;
+            padding: 20px;
+            border-radius: 8px;
+            display: inline-block;
+            max-width: 500px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 16px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <div class="message-box">
+        <p>Utente <strong th:text="${nomeUtente}">nome utente</strong> stai già partecipando alla <strong th:text="${nomeChallange}">nome challange</strong>.</p>
+        <p>Seleziona un'altra Challenge dove tu non stia partecipando.</p>
+        <form th:action="@{/vediChallange}" method="get">
+            <button type="submit">Torna alle Challenge</button>
+        </form>
+    </div>
+</body>
+</html>

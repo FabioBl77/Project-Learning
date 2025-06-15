@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profilo Utente</title>
+    
+    <link rel="stylesheet" href="/css/style.css">
+   
+</head>
+<body>
+    <nav style="background-color: #007bff; padding: 10px;">
+      <form th:action="@{/}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+          Home
+        </button>
+      </form>
+
+      <form th:action="@{/preProfilo}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+          Profilo
+        </button>
+      </form>
+
+      <form th:action="@{/preChallenge}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
+          Challenge
+        </button>
+      </form>
+      
+    </nav>
+
+    <div class="header">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+
+    <h1>Lista Challange</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Data Fine</th>
+                <th>Nome challange</th>
+                <th>Condizione</th>
+                <th>Vincitore</th>
+                <th>Punti</th>
+                <th>Stato</th>
+                <th>Dettagli</th> <!-- nuova colonna -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Riga per ogni challenge -->
+            <tr th:each="challange : ${listaStorico}">
+                <td th:text="${challange.data}">Data</td>
+                <td th:text="${challange.dataFine}">Data Fine</td>
+                <td th:text="${challange.nomeChallange}">nome</td>
+                <td th:text="${challange.condizione == 0 ? 'nessuna' : (challange.condizione == 1 ? 'autore' : (challange.condizione == 2 ? 'genere' : ''))}">Condizione</td>
+                <td th:text="${challange.nomeVincitore}">Vincitore</td>
+                <td th:text="${challange.punti}">Punti</td>
+                <td th:text="${challange.stato == 0 ? 'in corso' : 'terminata'}">Stato</td>
+                <td>
+                    <form th:action="@{/dettagliChallange}" method="post">
+                        <input type="hidden" name="nomeChallange" th:value="${challange.nomeChallange}"/>
+                        <input type="hidden" name="fineChallange" th:value="${#temporals.format(challange.dataFine, 'yyyy-MM-dd')}"/>
+                        <button type="submit">Dettagli</button>
+                    </form>
+                </td>
+            </tr>
+
+            <!-- Riga visibile solo se la lista è vuota -->
+            <tr th:if="${#lists.isEmpty(listaStorico)}">
+                <td colspan="8">Nessuna challenge presente.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

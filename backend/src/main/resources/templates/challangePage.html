@@ -10,6 +10,26 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
+        <nav style="background-color: #007bff; padding: 10px;">
+  <form th:action="@{/}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+      Home
+    </button>
+  </form>
+
+  <form th:action="@{/preProfilo}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+      Profilo
+    </button>
+  </form>
+
+  <form th:action="@{/preChallenge}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
+      Challenge
+    </button>
+  </form>
+  
+</nav>
         
         
         <script src="" async defer></script>

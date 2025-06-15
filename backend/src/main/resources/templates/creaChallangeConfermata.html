@@ -40,6 +40,26 @@
     </style>
 </head>
 <body>
+    <nav style="background-color: #007bff; padding: 10px;">
+  <form th:action="@{/}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+      Home
+    </button>
+  </form>
+
+  <form th:action="@{/preProfilo}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+      Profilo
+    </button>
+  </form>
+
+  <form th:action="@{/preChallenge}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
+      Challenge
+    </button>
+  </form>
+  
+</nav>
 
     <h2>Challenge creata con successo!</h2>
 
@@ -57,7 +77,7 @@
             <td th:text="${newChallange.punteggio}">100</td>
         </tr>
     </table>
-       <h3>Questa Challange sarà attiva fino al <span th:text="${#temporals.format(dataFine, 'dd/MM/yyyy')}"></span></span></h3>
+       <h3>Questa Challange sarà attiva fino al <span th:text="${#temporals.format(dataFine, 'dd/MM/yyyy')}"></span></h3>
     <div class="buttons">
         <a th:href="@{/profilo}">Torna alla User Page</a>
         <a th:href="@{/challangePage}">Vai alla Challenge Page</a>

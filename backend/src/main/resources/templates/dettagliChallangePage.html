@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Conferma Creazione Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 60%;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .buttons a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #4285f4;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .buttons a:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+<nav style="background-color: #007bff; padding: 10px;">
+    <form th:action="@{/}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">Home</button>
+    </form>
+
+    <form th:action="@{/preProfilo}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">Profilo</button>
+    </form>
+
+    <form th:action="@{/preChallenge}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">Challenge</button>
+    </form>
+</nav>
+
+<h1>Dettagli Challenge</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Posizione</th> <!-- Colonna posizione -->
+            <th>Data Inizio</th>
+            <th>Nome Partecipante</th>
+            <th>Punteggio</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="partecipante, stat : ${challange}">
+            <td th:text="${stat.index + 1}">1</td> <!-- Numero progressivo -->
+            <td th:text="${#temporals.format(partecipante.dataInizio, 'dd/MM/yyyy')}">02/06/2025</td>
+            <td th:text="${partecipante.nomePartecipante}">Mario Rossi</td>
+            <td th:text="${partecipante.punteggio}">100</td>
+        </tr>
+    </tbody>
+</table>
+
+<form th:action="@{/addPartecipante}" method="post" style="margin-top: 20px;">
+    <input type="hidden" name="nomeChallange" th:value="${nomeChallange}" />
+    <input type="hidden" name="fineChallange" th:value="${#temporals.format(fineChallange, 'yyyy-MM-dd')}" />
+    <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Partecipa alla Challenge
+    </button>
+</form>
+
+<h3>Questa Challenge sarà attiva fino al <span th:text="${#temporals.format(fineChallange, 'dd/MM/yyyy')}">10/06/2025</span></h3>
+
+<div class="buttons">
+   
+    <a th:href="@{/vediChallange}">Vai alla Challenge Page</a>
+</div>
+
+</body>
+</html>

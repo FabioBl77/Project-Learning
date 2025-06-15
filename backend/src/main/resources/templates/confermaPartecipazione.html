@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Conferma Partecipazione</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #28a745;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+        a.button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        a.button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Complimenti <span th:text="${userLoggato.username}">Utente</span>!</h1>
+        <p>Adesso stai partecipando alla <strong th:text="${nomeChallange}">Nome Challenge</strong> che durerà fino al 
+            <span th:text="${#temporals.format(fineChallange, 'dd/MM/yyyy')}">10/06/2025</span>.</p>
+        
+        <a class="button" th:href="@{/vediChallange}">Vai alla pagina Challenge</a>
+    </div>
+</body>
+</html>

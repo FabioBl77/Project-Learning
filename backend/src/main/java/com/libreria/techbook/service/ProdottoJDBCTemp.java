@@ -379,6 +379,10 @@ public class ProdottoJDBCTemp {
         
     }
 
+    
+
+
+
     public Prodotto getLibroById(int idLibro) {
         String query = "SELECT * FROM libri WHERE id = ?";
         return jdbcTemplateObject.queryForObject(query, new BeanPropertyRowMapper<>(Prodotto.class), idLibro);
@@ -544,6 +548,20 @@ public class ProdottoJDBCTemp {
         String query = "INSERT INTO storico_challange (data, data_fine, nome_challange, condizione, nome_vincitore, punti, stato) VALUES (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplateObject.update(query, storico.getData(), storico.getDataFine(), storico.getNomeChallange(), storico.getCondizione(), storico.getNomeVincitore(), storico.getPunti(), storico.getStato());
     }
+
+    public boolean isUserPartecipante(String nomeChallange, String nomeUtente) {
+    // Query che verifica se esiste una riga con quel nome partecipante nella tabella della challenge
+    String query = "SELECT COUNT(*) FROM `" + nomeChallange + "` WHERE nome_partecipante = ?";
+
+    try {
+        Integer count = jdbcTemplateObject.queryForObject(query, new Object[]{nomeUtente}, Integer.class);
+        return count != null && count > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+        // Se errore, supponiamo che l'utente non partecipi per sicurezza
+        return false;
+    }
+}
     
     // Metodo per eseguire query DDL  
     /**

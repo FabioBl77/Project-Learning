@@ -6,6 +6,26 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+    <nav style="background-color: #007bff; padding: 10px;">
+  <form th:action="@{/}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+      Home
+    </button>
+  </form>
+
+  <form th:action="@{/preProfilo}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+      Profilo
+    </button>
+  </form>
+
+  <form th:action="@{/preChallenge}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
+      Challenge
+    </button>
+  </form>
+  
+</nav>
     <div class="container">
         <h2>Conferma Eliminazione</h2>
         <p>Sei sicuro di voler eliminare questo utente?</p>

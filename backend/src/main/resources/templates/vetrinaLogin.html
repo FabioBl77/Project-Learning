@@ -9,6 +9,10 @@
             margin: 20px;
         }
 
+        h1 {
+            text-align: center;
+        }
+
         /* Contenitore per mettere i form (pulsanti) in linea */
         .container {
             display: flex;
@@ -64,11 +68,34 @@
 <body>
 
     <div class="header">
-    <div>Benvenuto, <span th:text="${userLoggato.username}">Utente</span>!</div>
-        <form th:action="@{/logout}" method="post">
+   <form th:action="@{/logout}" method="post">
             <button type="submit" class="logout-btn">Logout</button>
         </form>
+        
     </div>  
+
+    <nav style="background-color: #007bff; padding: 10px;">
+  <form th:action="@{/}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+      Home
+    </button>
+  </form>
+
+  <form th:action="@{/preProfilo}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+      Profilo
+    </button>
+  </form>
+
+  <form th:action="@{/preChallenge}" method="get" style="display: inline;">
+    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
+      Challenge
+    </button>
+  </form>
+  
+</nav>
+
+ <div><h1>Benvenuto, <span th:text="${userLoggato.username}">Utente</span>!</h1></div>
 
      <!-- Pulsanti in linea -->
     <div class="container">
@@ -80,7 +107,7 @@
             <button class="big-button" type="submit">Libri</button>
         </form>
 
-        <form th:action="@{/challenge}" method="get">
+        <form th:action="@{/preChallenge}" method="get">
             <button class="big-button" type="submit">Challenge</button>
         </form>
     </div>
