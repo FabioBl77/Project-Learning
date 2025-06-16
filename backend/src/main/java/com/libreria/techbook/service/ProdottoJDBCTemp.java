@@ -1,5 +1,7 @@
 package com.libreria.techbook.service;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -562,6 +564,16 @@ public class ProdottoJDBCTemp {
         return false;
     }
 }
+
+    public int updateStatoStorico(int idChallange, String NomeVincitore, int punti, int stato) {
+        try {
+            String query = "UPDATE storico_challange SET nome_vincitore = ?, punti = ?, stato = ? WHERE id_challange = ?";
+            return jdbcTemplateObject.update(query, NomeVincitore, punti, stato, idChallange);
+        } catch (Exception e) {
+            // Gestione dell'errore
+            return 0;
+        }
+    }
     
     // Metodo per eseguire query DDL  
     /**

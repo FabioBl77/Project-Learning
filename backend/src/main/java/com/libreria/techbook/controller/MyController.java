@@ -466,9 +466,39 @@ public String getMethodName(Model model, HttpSession session) {
     @GetMapping("/vediChallange")
     public String getVediChallange(Model model, HttpSession session) {
         User userLoggato = (User) session.getAttribute("userLoggato");
-        List<Storico> listaStorico = prodottoJDBCTemp.ritornaStorico();
-            model.addAttribute("listaStorico", listaStorico);
 
+        
+       // 1. Aggiorna lo stato delle challenge concluse
+        List<Storico> listaStoricoFine = prodottoJDBCTemp.ritornaStorico();
+        for (Storico storico : listaStoricoFine) {
+            if (storico.getStato() != 1 && !storico.getDataFine().isAfter(LocalDate.now())) {
+                List<Challange> listaPartecipazioni = prodottoJDBCTemp.ritornaChallange(storico.getNomeChallange());
+
+                if (listaPartecipazioni != null && !listaPartecipazioni.isEmpty()) {
+                    // Ordina per punteggio decrescente
+                    listaPartecipazioni.sort(Comparator.comparingInt(Challange::getPunteggio).reversed());
+
+                    // Imposta vincitore e stato
+                    Challange vincitore = listaPartecipazioni.get(0);
+                    storico.setStato(1);
+                    storico.setNomeVincitore(vincitore.getNomePartecipante());
+                    storico.setPunti(vincitore.getPunteggio());
+
+                    // Aggiorna nel DB
+                    prodottoJDBCTemp.updateStatoStorico(
+                        storico.getIdChallange(),
+                        storico.getNomeVincitore(),
+                        storico.getPunti(),
+                        storico.getStato()
+                    );
+                }
+            }
+        }
+
+        List<Storico> listaStorico = prodottoJDBCTemp.ritornaStorico();
+
+
+        model.addAttribute("listaStorico", listaStorico);
         model.addAttribute("userLoggato", userLoggato);
         return "vediChallangePage";
     }
@@ -556,28 +586,60 @@ public String getClassificaGlobale(Model model, HttpSession session) {
     return "classificaGlobalePage";
 }
 
-@GetMapping("/mieChallange")
-public String getMieChallange(Model model, HttpSession session) {
-    User userLoggato = (User) session.getAttribute("userLoggato");
-    List<Storico> listaStorico = prodottoJDBCTemp.ritornaStorico();
-    List<Challange> listaMieChallange = new ArrayList<>();
-    List<Storico> listaMiaStorico = new ArrayList<>();
-    for (Storico storico : listaStorico) {
-       List<Challange> challange = prodottoJDBCTemp.ritornaChallange(storico.getNomeChallange());
-        for (Challange c : challange) {
-            if (c.getNomePartecipante().equals(userLoggato.getUsername())) {
-                listaMieChallange.add(c);
-                listaMiaStorico.add(storico);
+    @GetMapping("/mieChallange")
+    public String getMieChallange(Model model, HttpSession session) {
+        User userLoggato = (User) session.getAttribute("userLoggato");
+
+        List<Challange> listaMieChallange = new ArrayList<>();
+        List<Storico> listaMioStorico = new ArrayList<>();
+
+        // 1. Aggiorna lo stato delle challenge concluse
+        List<Storico> listaStoricoFine = prodottoJDBCTemp.ritornaStorico();
+        for (Storico storico : listaStoricoFine) {
+            if (storico.getStato() != 1 && !storico.getDataFine().isAfter(LocalDate.now())) {
+                List<Challange> listaPartecipazioni = prodottoJDBCTemp.ritornaChallange(storico.getNomeChallange());
+
+                if (listaPartecipazioni != null && !listaPartecipazioni.isEmpty()) {
+                    // Ordina per punteggio decrescente
+                    listaPartecipazioni.sort(Comparator.comparingInt(Challange::getPunteggio).reversed());
+
+                    // Imposta vincitore e stato
+                    Challange vincitore = listaPartecipazioni.get(0);
+                    storico.setStato(1);
+                    storico.setNomeVincitore(vincitore.getNomePartecipante());
+                    storico.setPunti(vincitore.getPunteggio());
+
+                    // Aggiorna nel DB
+                    prodottoJDBCTemp.updateStatoStorico(
+                        storico.getIdChallange(),
+                        storico.getNomeVincitore(),
+                        storico.getPunti(),
+                        storico.getStato()
+                    );
+                }
             }
         }
-    }
-    System.out.println(listaMiaStorico.size());
-    
-    model.addAttribute("userLoggato", userLoggato);
-    model.addAttribute("listaMioStorico", listaMiaStorico);
 
-    return "mieChallengePage";
-}
+        // 2. Estrai le challenge dell'utente loggato
+        List<Storico> listaStorico = prodottoJDBCTemp.ritornaStorico();
+        for (Storico storico : listaStorico) {
+            List<Challange> partecipazioni = prodottoJDBCTemp.ritornaChallange(storico.getNomeChallange());
+
+            for (Challange c : partecipazioni) {
+                if (c.getNomePartecipante().equals(userLoggato.getUsername())) {
+                    listaMieChallange.add(c);
+                    listaMioStorico.add(storico);
+                }
+            }
+        }
+        
+        // 3. Aggiungi attributi al model
+        model.addAttribute("userLoggato", userLoggato);
+        model.addAttribute("listaMioStorico", listaMioStorico);
+
+        return "mieChallengePage";
+    }
+
 
 @PostMapping("/dettagliMiaChallange")
 public String getDettagliMiaChallange(Model model, HttpSession session,
