@@ -170,7 +170,7 @@ public class ProdottoJDBCTemp {
                         storico.setData(rs.getDate("data").toLocalDate());
                         storico.setDataFine(rs.getDate("data_fine").toLocalDate());
                         storico.setNomeChallange(rs.getString("nome_challange"));
-                        storico.setCondizione(rs.getInt("condizione"));
+                        storico.setCondizione(rs.getString("condizione"));
                         storico.setNomeVincitore(rs.getString("nome_vincitore"));
                         storico.setPunti(rs.getInt("punti"));
                         storico.setStato(rs.getInt("stato"));
@@ -326,7 +326,7 @@ public class ProdottoJDBCTemp {
                 "data DATE," +
                 "data_fine DATE," +
                 "nome_challange VARCHAR(50)," +
-                "condizione INT," +
+                "condizione VARCHAR(50)," +
                 "nome_vincitore VARCHAR(50)," +
                 "punti INT," +
                 "stato INT" +
@@ -543,7 +543,7 @@ public class ProdottoJDBCTemp {
         jdbcTemplateObject.update(query, challange.getDataInizio(), challange.getNomePartecipante(), challange.getPunteggio());
     }
 
-     public void insertStoricoCallange(Storico storico, LocalDate data, LocalDate dataFine,  String nomeChallange, int condizione, String nomeVincitore, int punteggio, int stato) {
+     public void insertStoricoCallange(Storico storico, LocalDate data, LocalDate dataFine,  String nomeChallange, String condizione, String nomeVincitore, int punteggio, int stato) {
         
         String query = "INSERT INTO storico_challange (data, data_fine, nome_challange, condizione, nome_vincitore, punti, stato) VALUES (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplateObject.update(query, storico.getData(), storico.getDataFine(), storico.getNomeChallange(), storico.getCondizione(), storico.getNomeVincitore(), storico.getPunti(), storico.getStato());

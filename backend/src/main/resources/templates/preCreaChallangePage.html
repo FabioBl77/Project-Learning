@@ -1,69 +1,224 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Profilo Utente</title>
-    
-    <link rel="stylesheet" href="/css/style.css">
-   
+    <meta charset="UTF-8" />
+    <title>Crea Challenge</title>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 45%;
+            margin: 10px;
+            float: left;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 8px;
+            text-align: left;
+        }
+        caption {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .clear {
+            clear: both;
+        }
+        form {
+            margin-top: 30px;
+            max-width: 500px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 6px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+  <script>
+    function aggiornaVisibilitaCondizione() {
+        const condizione = document.querySelector('input[name="condizione"]:checked').value;
+
+        const autoreDiv = document.getElementById("autoreDiv");
+        const genereDiv = document.getElementById("genereDiv");
+        const sceltaHidden = document.getElementById("sceltaHidden");
+        const autoreSelect = document.getElementById("autoreSelect");
+        const genereSelect = document.getElementById("genereSelect");
+
+        if (condizione === "autore") {
+            autoreDiv.style.display = "block";
+            genereDiv.style.display = "none";
+
+            autoreSelect.disabled = false;
+            genereSelect.disabled = true;
+            sceltaHidden.disabled = true;
+        } else if (condizione === "genere") {
+            autoreDiv.style.display = "none";
+            genereDiv.style.display = "block";
+
+            autoreSelect.disabled = true;
+            genereSelect.disabled = false;
+            sceltaHidden.disabled = true;
+        } else {
+            autoreDiv.style.display = "none";
+            genereDiv.style.display = "none";
+
+            autoreSelect.disabled = true;
+            genereSelect.disabled = true;
+            sceltaHidden.disabled = false;
+            sceltaHidden.value = "nessuna";
+        }
+    }
+
+    window.onload = function () {
+        aggiornaVisibilitaCondizione();
+
+        const radioButtons = document.querySelectorAll('input[name="condizione"]');
+        radioButtons.forEach(rb => rb.addEventListener('change', aggiornaVisibilitaCondizione));
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const condizione = document.querySelector('input[name="condizione"]:checked').value;
+            const autoreSelect = document.getElementById("autoreSelect");
+            const genereSelect = document.getElementById("genereSelect");
+
+            if (condizione === "autore" && (!autoreSelect.value || autoreSelect.value === "")) {
+                alert("Seleziona un autore.");
+                e.preventDefault();
+            }
+
+            if (condizione === "genere" && (!genereSelect.value || genereSelect.value === "")) {
+                alert("Seleziona un genere.");
+                e.preventDefault();
+            }
+        });
+    }
+</script>
+
+
 </head>
 <body>
+
     <nav style="background-color: #007bff; padding: 10px;">
-  <form th:action="@{/}" method="get" style="display: inline;">
-    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
-      Home
-    </button>
-  </form>
+      <form th:action="@{/}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+          Home
+        </button>
+      </form>
 
-  <form th:action="@{/preProfilo}" method="get" style="display: inline;">
-    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
-      Profilo
-    </button>
-  </form>
+      <form th:action="@{/preProfilo}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; margin-right: 20px; cursor: pointer;">
+          Profilo
+        </button>
+      </form>
 
-  <form th:action="@{/preChallenge}" method="get" style="display: inline;">
-    <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
-      Challenge
-    </button>
-  </form>
-  
-</nav>
+      <form th:action="@{/preChallenge}" method="get" style="display: inline;">
+        <button type="submit" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">
+          Challenge
+        </button>
+      </form>
+      
+    </nav>
 
-<div class="header">
-   
-    <form th:action="@{/logout}" method="post">
-        <button type="submit" class="logout-btn">Logout</button>
-    </form>
-</div>
+    <div class="header">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
 
+<h1>Generi e Autori disponibili</h1>
 
+<!-- TABELLA GENERI -->
+<table>
+    <caption>Generi</caption>
+    <thead>
+        <tr><th>Genere</th></tr>
+    </thead>
+    <tbody>
+        <tr th:each="genere : ${genereLibri}">
+            <td th:text="${genere}"></td>
+        </tr>
+    </tbody>
+</table>
 
-<h1>Crea la tua Challange personalizzata</h1>
+<!-- TABELLA AUTORI -->
+<table>
+    <caption>Autori</caption>
+    <thead>
+        <tr><th>Autore</th></tr>
+    </thead>
+    <tbody>
+        <tr th:each="autore : ${autoreLibri}">
+            <td th:text="${autore}"></td>
+        </tr>
+    </tbody>
+</table>
 
+<div class="clear"></div>
 
-<!-- Bottone per creare una challenge -->
+<!-- FORM -->
+<h2>Crea la tua Challenge</h2>
+
 <form th:action="@{/creaChallenge}" method="get">
-    <label for="challange">Nome Challange:</label>
-    <input type="text" id="challange" name="challange" required>
 
-    <label for="opzione">Seleziona Condizione:</label>
-    <select id="opzione" name="opzione" required>
-        <option value="nessuna">Nessuna</option>
-        <option value="autore">Autore</option>
-        <option value="genere">Genere</option>
-    </select>
+    <!-- NOME CHALLENGE -->
+    <label for="challange">Nome Challenge:</label>
+    <input type="text" id="challange" name="challange" required />
 
-    <label for="opzione">Seleziona Tempo:</label>
-    <select id="opzione" name="tempo" required>
+    <!-- CONDIZIONE (NESSUNA, AUTORE, GENERE) -->
+    <label>Condizione:</label>
+    <input type="radio" name="condizione" value="nessuna" checked /> Nessuna<br/>
+    <input type="radio" name="condizione" value="autore" /> Autore<br/>
+    <input type="radio" name="condizione" value="genere" /> Genere
+    <input type="hidden" id="sceltaHidden" name="scelta" value="nessuna" />
+
+    <!-- SELECT AUTORE (visibile solo se condizione === "autore") -->
+    <div id="autoreDiv" style="display: none;">
+        <label for="autoreSelect">Seleziona Autore:</label>
+        <select id="autoreSelect" name="scelta">
+            <option value="">-- Seleziona un autore --</option>
+            <option th:each="a : ${autoreLibri}" th:value="${a}" th:text="${a}"></option>
+        </select>
+    </div>
+
+    <!-- SELECT GENERE (visibile solo se condizione === "genere") -->
+    <div id="genereDiv" style="display: none;">
+        <label for="genereSelect">Seleziona Genere:</label>
+        <select id="genereSelect" name="scelta">
+            <option value="">-- Seleziona un genere --</option>
+            <option th:each="g : ${genereLibri}" th:value="${g}" th:text="${g}"></option>
+        </select>
+    </div>
+
+    <!-- TEMPO -->
+    <label for="tempoSelect">Seleziona Tempo:</label>
+    <select id="tempoSelect" name="tempo" required>
         <option value="settimana">7 giorni</option>
         <option value="dieci">10 giorni</option>
         <option value="mese">30 giorni</option>
     </select>
 
-    <button type="submit" class="challenge-btn">Crea una Challenge</button>
+    <!-- SUBMIT -->
+    <button type="submit">Crea Challenge</button>
+
 </form>
-
-
 
 </body>
 </html>
+

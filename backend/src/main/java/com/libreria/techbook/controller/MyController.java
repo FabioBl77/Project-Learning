@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpSession;
@@ -377,8 +379,8 @@ public class MyController {
 
 
     @GetMapping("/creaChallenge")
-    public String getCreaChallenge(@RequestParam ("challange") String challenge, @RequestParam ("tempo") String tempoSelect, @RequestParam ("opzione") String condizioneSelect, Model model, HttpSession session) {
-        int condizione = 0;
+    public String getCreaChallenge(@RequestParam ("challange") String challenge, @RequestParam ("tempo") String tempoSelect, @RequestParam ("scelta") String condizione, Model model, HttpSession session) {
+       
         int tempo = 0;
         switch (tempoSelect) {
             case "settimana":
@@ -394,20 +396,7 @@ public class MyController {
                 tempo = 5;
                 break;
         }
-        switch (condizioneSelect) {
-            case "nessuna":
-                condizione = 0;
-                break;
-            case "autore":
-                condizione = 1;
-                break;
-            case "genere":
-                condizione = 2;
-                break;
-            default:
-                condizione = 0;
-                break;
-        }
+       
         String alertStato;
         User userLoggato = (User) session.getAttribute("userLoggato");
         Storico storico = new Storico();
@@ -443,16 +432,35 @@ public class MyController {
         return "creaChallangeConfermata";
     }
 
-    @GetMapping("/preChallenge")
-    public String getMethodName(Model model, HttpSession session) {
-        User userLoggato = (User) session.getAttribute("userLoggato");
-        model.addAttribute("userLoggato", userLoggato);
-        return "preChallengePage";
-    }
-    
     @GetMapping("/preCreaChallange")
+public String getMethodName(Model model, HttpSession session) {
+    User userLoggato = (User) session.getAttribute("userLoggato");
+    ArrayList<Prodotto> lista = prodottoJDBCTemp.ritornaProdotto();
+
+    Set<String> generiUnici = new TreeSet<>();
+    Set<String> autoriUnici = new TreeSet<>();
+
+    for (Prodotto p : lista) {
+        if (p.getGenere() != null && !p.getGenere().isBlank()) {
+            generiUnici.add(p.getGenere());
+        }
+        if (p.getAutore() != null && !p.getAutore().isBlank()) {
+            autoriUnici.add(p.getAutore());
+        }
+    }
+
+
+    model.addAttribute("genereLibri", generiUnici);
+    model.addAttribute("autoreLibri", autoriUnici);
+    model.addAttribute("userLoggato", userLoggato);
+
+    return "preCreaChallangePage";
+}
+
+    
+    @GetMapping("/preChallenge")
     public String getPreCreaChallenge(Model model, HttpSession session) {
-        return "preCreaChallangePage";
+        return "preChallengePage";
     }
 
     @GetMapping("/vediChallange")
@@ -488,13 +496,27 @@ public String getDettagliChallange(Model model, HttpSession session,
 public String addPartecipante(Model model, @RequestParam("nomeChallange") String nomeChallange, @RequestParam("fineChallange") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fineChallange, HttpSession session, RedirectAttributes redirectAttributes) {
     User userLoggato = (User) session.getAttribute("userLoggato");
     Challange partecipante = new Challange();
+    Storico storico = new Storico();
+    ArrayList<Storico> listaStorico = prodottoJDBCTemp.ritornaStorico();
+    for (Storico s : listaStorico) { 
+        if (s.getNomeChallange().equals(nomeChallange)) {
+            storico.setStato(s.getStato());
+         }
+    }
 
+    System.out.println(storico.getStato());
     if (userLoggato == null) {
         // Se l'utente non è loggato, reindirizza alla login o altra pagina
         return "redirect:/login";
     }
+    if (storico.getStato() > 0) {
+         model.addAttribute("userLoggato", userLoggato);
+        model.addAttribute("nomeChallange", nomeChallange);
+        return "challangeTerminatoPage";
+
+    }
     boolean isPartecipante = prodottoJDBCTemp.isUserPartecipante(nomeChallange, userLoggato.getUsername());
-    if (isPartecipante) {
+     if (isPartecipante) {
          model.addAttribute("userLoggato", userLoggato);
         model.addAttribute("nomeChallange", nomeChallange);
         return "partecipazioneGiaEffettuata";
@@ -515,6 +537,9 @@ public String addPartecipante(Model model, @RequestParam("nomeChallange") String
    
     return "confermaPartecipazione";
 }
+
+
+
 
  @GetMapping("/classificaGlobale") 
 public String getClassificaGlobale(Model model, HttpSession session) {

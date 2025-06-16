@@ -10,7 +10,7 @@ public class Storico {
     private LocalDate dataFine;
    
     private String nomeChallange;
-    private int condizione;
+    private String condizione;
     private String nomeVincitore;
     private int punti;
     private int stato;
@@ -42,10 +42,10 @@ public class Storico {
     public void setNomeChallange(String nomeChallange) {
         this.nomeChallange = nomeChallange;
     }
-    public int getCondizione() {
+    public String getCondizione() {
         return condizione;
     }
-    public void setCondizione(int condizione) {
+    public void setCondizione(String condizione) {
         this.condizione = condizione;
     }
     public String getNomeVincitore() {

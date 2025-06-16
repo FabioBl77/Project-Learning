@@ -56,7 +56,7 @@
                 <td th:text="${challange.data}">Data</td>
                 <td th:text="${challange.dataFine}">Data Fine</td>
                 <td th:text="${challange.nomeChallange}">nome</td>
-                <td th:text="${challange.condizione == 0 ? 'nessuna' : (challange.condizione == 1 ? 'autore' : (challange.condizione == 2 ? 'genere' : ''))}">Condizione</td>
+                <td th:text="${challange.condizione}">Condizione</td>
                 <td th:text="${challange.nomeVincitore}">Vincitore</td>
                 <td th:text="${challange.punti}">Punti</td>
                 <td th:text="${challange.stato == 0 ? 'in corso' : 'terminata'}">Stato</td>
