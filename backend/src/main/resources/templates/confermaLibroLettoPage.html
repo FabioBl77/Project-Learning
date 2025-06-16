@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Libro Letto - Conferma</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        .message {
+            margin-top: 50px;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        .btn {
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        nav {
+            background-color: #007bff;
+            padding: 10px;
+            text-align: left;
+        }
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav>
+        <form th:action="@{/}" method="get" style="display: inline;">
+            <button type="submit">Home</button>
+        </form>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit">Logout</button>
+        </form>
+    </nav>
+
+    <!-- MESSAGGIO DI CONFERMA -->
+    <div class="message">
+        <p th:text="'Complimenti ' + ${userLoggato.username} + '! Hai letto un libro con successo.'"></p>
+        <p>Hai guadagnato 1 punto globale</p>
+        <p>E 1 punto per ogni challenge a cui partecipi</p>
+
+        <form th:action="@{/libreria}" method="get">
+            <button class="btn" type="submit">Torna alla Libreria</button>
+        </form>
+    </div>
+
+</body>
+</html>

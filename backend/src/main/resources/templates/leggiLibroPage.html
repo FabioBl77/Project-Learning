@@ -93,7 +93,7 @@
         Letture totali: <span th:text="${libro.letture}">0</span>
     </div>
 
-    <form th:action="@{/confermaLettura}" method="post">
+    <form th:action="@{/confermaLibroLetto}" method="post">
         <input type="hidden" name="idLibro" th:value="${libro.id}">
         <button type="submit" class="btn-conferma">Conferma Lettura</button>
     </form>

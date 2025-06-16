@@ -658,7 +658,66 @@ public String getDettagliMiaChallange(Model model, HttpSession session,
     return "dettagliMiaChallangePage";
 }
 
+@PostMapping("/confermaLibroLetto")
+public String getLeggiLibro(Model model, HttpSession session, @RequestParam("idLibro") int idLibro) {
+    User userLoggato = (User) session.getAttribute("userLoggato");
+    List<Storico> storico = prodottoJDBCTemp.ritornaStorico();
+    ArrayList<Prodotto> listaLibri = prodottoJDBCTemp.ritornaProdotto();
+    Prodotto libroLetto = null;
 
+    for (Prodotto libro : listaLibri) {
+        if (libro.getId() == idLibro) {
+            // Aggiorna le letture del libro
+            libro.setLetture(libro.getLetture() + 1);
+            prodottoJDBCTemp.updateLettureLibro(libro.getId(), libro.getLetture());
+            libroLetto = libro;
+            break;
+        }
+    }
+
+    // Se il libro non è stato trovato, reindirizza a errore
+    if (libroLetto == null) {
+        return "redirect:/errore"; // oppure una pagina che gestisce l'errore
+    }
+
+    // Aggiorna punteggio utente
+    userLoggato.setPunteggio(userLoggato.getPunteggio() + 1);
+    prodottoJDBCTemp.updatePunteggioUser(userLoggato.getUsername(), userLoggato.getPunteggio());
+
+    // Aggiorna punteggio challenge se l'utente partecipa e la condizione è soddisfatta
+    for (Storico s : storico) {
+        if (s.getStato() != 0) continue;
+
+        List<Challange> partecipazioni = prodottoJDBCTemp.ritornaChallange(s.getNomeChallange());
+        for (Challange c : partecipazioni) {
+            if (!c.getNomePartecipante().equals(userLoggato.getUsername())) continue;
+
+            boolean soddisfaCondizione = false;
+
+            if ("nessuna".equalsIgnoreCase(s.getCondizione())) {
+                soddisfaCondizione = true;
+            } else {
+                String condizione = s.getCondizione();
+                String genere = libroLetto.getGenere();
+                String autore = libroLetto.getAutore();
+
+                if ((genere != null && genere.equalsIgnoreCase(condizione)) ||
+                    (autore != null && autore.equalsIgnoreCase(condizione))) {
+                    soddisfaCondizione = true;
+                }
+            }
+
+            if (soddisfaCondizione) {
+                c.setPunteggio(c.getPunteggio() + 1);
+                prodottoJDBCTemp.updatePunteggioChallange(s.getNomeChallange(), c.getNomePartecipante(), c.getPunteggio());
+            }
+        }
+    }
+
+    model.addAttribute("userLoggato", userLoggato);
+    model.addAttribute("libroLetto", libroLetto);
+    return "confermaLibroLettoPage";
+}
 
     
 

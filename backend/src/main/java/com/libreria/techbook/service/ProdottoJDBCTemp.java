@@ -574,6 +574,36 @@ public class ProdottoJDBCTemp {
             return 0;
         }
     }
+
+    public int updateLettureLibro(int idLibro, int letture) {
+        try {
+            String query = "UPDATE libri SET letture = ? WHERE id = ?";
+            return jdbcTemplateObject.update(query, letture, idLibro);
+        } catch (Exception e) {
+            // Gestione dell'errore
+            return 0;
+        }
+    }
+
+    public int updatePunteggioUser(String username, int punteggio) {
+        try {
+            String query = "UPDATE users SET punteggio = ? WHERE username = ?";
+            return jdbcTemplateObject.update(query, punteggio, username);
+        } catch (Exception e) {
+            // Gestione dell'errore
+            return 0;
+        }
+    }
+
+    public int updatePunteggioChallange(String nomeChallange, String nomePartecipante, int punteggio) {
+        try {
+            String query = "UPDATE " + nomeChallange + " SET punteggio = ? WHERE nome_partecipante = ?";
+            return jdbcTemplateObject.update(query, punteggio, nomePartecipante);
+        } catch (Exception e) {
+            // Gestione dell'errore
+            return 0;
+        }
+    }
     
     // Metodo per eseguire query DDL  
     /**
